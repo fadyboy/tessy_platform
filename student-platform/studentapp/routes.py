@@ -1,6 +1,7 @@
-from app import app
+from flask import render_template
+from studentapp import app
 
 @app.route("/")
 @app.route("/index")
 def index():
-    return "App is running"
+    return render_template("index.html", title="Home")
