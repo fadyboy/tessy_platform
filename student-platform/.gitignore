@@ -2,3 +2,4 @@
 /__pycache__
 /studentapp/__pycache__/
 *.db
+*.pyc
