@@ -22,13 +22,15 @@ class Person(db.Model):
     gender = db.Column(db.String(16))
     date_of_birth = db.Column(db.DateTime)
     contact_number = db.Column(db.String(128))
-    email = db.Column(db.String(128), unique=True)
+    email = db.Column(db.String(128))
+
+    def __repr__(self):
+        return f"Person: {self.firstname} {self.surname}"
 
 
 class Staff(Person):
     __tablename__ = "staff"
     id = db.Column(db.Integer, primary_key=True)
-
 
 
 class Student(Person):
@@ -44,3 +46,6 @@ class Classroom(db.Model):
     classroom_name = db.Column(db.String(128))
     classroom_symbol = db.Column(db.String(8))
     students = db.relationship("Student", backref="classroom", lazy="dynamic")
+
+    def __repr__(self):
+        return f"Classroom: {self.classroom_symbol}"

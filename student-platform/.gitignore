@@ -1,5 +1,6 @@
 /venv
 /__pycache__
 /studentapp/__pycache__/
+/migrations/__pycache__
 *.db
 *.pyc
