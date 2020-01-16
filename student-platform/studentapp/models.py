@@ -1,14 +1,16 @@
-from studentapp import db
+from studentapp import db, login
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin
 
 
-class Users(db.Model):
-    __tablename__ = "Users"
+class User(db.Model, UserMixin):
+    __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(64), index=True, unique=True)
-    email = db.Column(db.String(128), index=True, unique=True)
+    username = db.Column(db.String(64, collation="NOCASE"), index=True, unique=True)
+    email = db.Column(db.String(128, collation="NOCASE"), index=True, unique=True)
     password_hash = db.Column(db.String(128))
-    role = db.Column(db.String(16))
+    is_active = db.Column(db.Boolean, nullable=False, server_default="t")
+    role = db.relationship("Role", secondary="user_roles", uselist=False)
 
     def __repr__(self):
         return f"User: {self.username}"
@@ -56,3 +58,25 @@ class Classroom(db.Model):
 
     def __repr__(self):
         return f"Classroom: {self.classroom_symbol}"
+
+
+class Role(db.Model):
+    __tablename__ = "roles"
+    id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String(32), unique=True)
+
+    def __repr__(self):
+        return f"Role: {self.name}"
+
+
+class UserRoles(db.Model):
+    __tablename__ = "user_roles"
+    id = db.Column(db.Integer(), primary_key=True)
+    user_id = db.Column(db.Integer(), db.ForeignKey("users.id", ondelete="CASCADE"))
+    role_id = db.Column(db.Integer(), db.ForeignKey("roles.id", ondelete="CASCADE"))
+
+
+@login.user_loader
+def user_loader(id):
+    return User.query.get(int(id))
+
