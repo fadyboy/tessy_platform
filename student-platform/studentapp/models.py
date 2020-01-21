@@ -34,7 +34,7 @@ class Person(db.Model):
     email = db.Column(db.String(128))
 
     def __repr__(self):
-        return f"Person: {self.firstname} {self.surname}"
+        return f"{self.firstname} {self.surname}"
 
 
 class Staff(Person):
@@ -52,8 +52,8 @@ class Student(Person):
 class Classroom(db.Model):
     __tablename__ = "classroom"
     id = db.Column(db.Integer, primary_key=True)
-    classroom_name = db.Column(db.String(128))
-    classroom_symbol = db.Column(db.String(8))
+    classroom_name = db.Column(db.String(128), nullable=False)
+    classroom_symbol = db.Column(db.String(8), nullable=False, unique=True, index=True)
     students = db.relationship("Student", backref="classroom", lazy="dynamic")
 
     def __repr__(self):

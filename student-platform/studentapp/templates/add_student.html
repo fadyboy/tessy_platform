@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Add Student</h1>
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.firstname.label }}<br/>
+            {{ form.firstname(size=32) }}
+            {% for error in form.firstname.errors %}
+                <span style="color:red;">{{ error }}</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.middlename.label }}<br/>
+            {{ form.middlename(size=32) }}
+        </p>
+        <p>
+            {{ form.surname.label }}<br/>
+            {{ form.surname(size=32) }}
+            {% for error in form.surname.errors %}
+                <span style="color:red;">{{ error }}</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.gender.label }}<br/>
+            {{ form.gender() }}
+            {% for error in form.gender.errors %}
+                <span style="color:red;">{{ error }}</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.birthday.label }}<br/>
+            {{ form.birthday() }}
+            {% for error in form.birthday.errors %}
+                <span style="color:red;">{{ error }}</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.contact_number.label }}<br/>
+            {{ form.contact_number() }}
+        </p>
+        <p>
+            {{ form.email.label }}<br/>
+            {{ form.email(size=32) }}
+            {% for error in form.email.errors %}
+                <span style="color:red;">{{ error }}</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.parent_guardian_name.label }}<br/>
+            {{ form.parent_guardian_name(size=64) }}
+        </p>
+        <p>
+            {{ form.classrooms() }}
+        </p>
+        <p>{{ form.submit() }}</p>
+    </form>
+{% endblock %}
