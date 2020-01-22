@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, url_for, request
 from werkzeug.urls import url_parse
 from studentapp import app, db
-from studentapp.forms import LoginForm, AddUserForm, AddStaffForm, AddStudentForm
+from studentapp.forms import LoginForm, AddUserForm, AddStaffForm, AddStudentForm, AddClassroomForm
 from studentapp.models import User, Staff, Student, Classroom
 from flask_login import current_user, login_user, logout_user, login_required
 
@@ -102,3 +102,20 @@ def add_student():
         flash(f"Student - {student.firstname} {student.surname} added")
         return redirect(url_for("add_student"))
     return render_template("add_student.html", title="Add Student", form=form)
+
+
+@app.route("/add_classroom", methods=["GET", "POST"])
+@login_required
+def add_classroom():
+    form = AddClassroomForm()
+    if form.validate_on_submit():
+        classroom = Classroom(
+            classroom_name=form.classroom_name.data,
+            classroom_symbol=form.classroom_symbol.data
+        )
+        db.session.add(classroom)
+        db.session.commit()
+        flash(f"{classroom.classroom_symbol} classroom added")
+        return redirect(url_for("add_classroom"))
+
+    return render_template("add_classroom.html", title="Add Classroom", form=form)

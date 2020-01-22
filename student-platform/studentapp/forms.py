@@ -11,7 +11,7 @@ class LoginForm(FlaskForm):
     password = PasswordField("Password", validators=[DataRequired()])
     submit = SubmitField("Log In")
 
-# Helper function for the query_factory param
+# Helper function for the query_factory in roles dropdown field
 def roles_query():
     return Role.query
 
@@ -52,6 +52,7 @@ class AddStaffForm(FlaskForm):
     submit = SubmitField("Submit")
 
 
+# helper function for query factory for classrooms dropdown field
 def classroom_query():
     return Classroom.query
 
@@ -62,6 +63,12 @@ class AddStudentForm(AddStaffForm):
     parent_guardian_name = StringField("Parent/Guardian name")
     classrooms = QuerySelectField(query_factory=classroom_query, allow_blank=True, blank_text="Select class",
                                   get_label="classroom_symbol", get_pk=get_pk)
+    submit = SubmitField("Submit")
+
+
+class AddClassroomForm(FlaskForm):
+    classroom_name = StringField("Classroom Name", validators=[DataRequired()])
+    classroom_symbol = StringField("Classroom Symbol", validators=[DataRequired()])
     submit = SubmitField("Submit")
 
 
