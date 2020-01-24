@@ -25,6 +25,7 @@ class User(db.Model, UserMixin):
 class Person(db.Model):
     __abstract__ = True
     id = db.Column(db.Integer, primary_key=True)
+    serial_number = db.Column(db.String(32), nullable=False, unique=True)
     firstname = db.Column(db.String(64), nullable=False)
     middlename = db.Column(db.String(64))
     surname = db.Column(db.String(64), nullable=False)
@@ -53,7 +54,7 @@ class Classroom(db.Model):
     __tablename__ = "classroom"
     id = db.Column(db.Integer, primary_key=True)
     classroom_name = db.Column(db.String(128), nullable=False)
-    classroom_symbol = db.Column(db.String(8), nullable=False, unique=True, index=True)
+    classroom_symbol = db.Column(db.String(8), nullable=False, unique=True)
     students = db.relationship("Student", backref="classroom", lazy="dynamic")
 
     def __repr__(self):
