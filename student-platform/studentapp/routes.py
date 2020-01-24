@@ -64,13 +64,15 @@ def add_user():
 def add_staff():
     form = AddStaffForm()
     if form.validate_on_submit():
-        staff_user = Staff(firstname=form.firstname.data,
-                           middlename=form.middlename.data,
-                           surname=form.surname.data,
-                           gender=form.gender.data,
-                           birthday=form.birthday.data,
-                           contact_number=form.contact_number.data,
-                           email=form.email.data)
+        staff_user = Staff(
+            serial_number = form.serial_number.data,
+            firstname=form.firstname.data,
+            middlename=form.middlename.data,
+            surname=form.surname.data,
+            gender=form.gender.data,
+            birthday=form.birthday.data,
+            contact_number=form.contact_number.data,
+            email=form.email.data)
         db.session.add(staff_user)
         db.session.commit()
         flash(f"{staff_user.firstname} {staff_user.surname} added as a member of staff")
@@ -87,6 +89,7 @@ def add_student():
         # get classroom id
         classroom = form.classrooms.data
         student = Student(
+            serial_number=form.serial_number.data,
             firstname=form.firstname.data,
             middlename=form.middlename.data,
             surname=form.surname.data,

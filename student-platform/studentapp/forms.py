@@ -41,6 +41,7 @@ class AddUserForm(FlaskForm):
 
 
 class AddStaffForm(FlaskForm):
+    serial_number = StringField("Staff Number", validators=[DataRequired()])
     firstname = StringField("Firstname", validators=[DataRequired()])
     middlename = StringField("Middlename")
     surname = StringField("Surname", validators=[DataRequired()])
@@ -58,6 +59,7 @@ def classroom_query():
 
 
 class AddStudentForm(AddStaffForm):
+    serial_number = StringField("Student Number", validators=[DataRequired()])
     contact_number = StringField("Parent/Guardian Contact Number")
     email = StringField("Parent/Guardian Email", validators=[DataRequired(), Email()])
     parent_guardian_name = StringField("Parent/Guardian name")
