@@ -3,7 +3,7 @@ from wtforms import StringField, PasswordField, SubmitField, SelectField
 from wtforms.fields.html5 import DateField
 from wtforms_sqlalchemy.fields import QuerySelectField
 from wtforms.validators import DataRequired, ValidationError, Email, EqualTo
-from studentapp.models import Role, User, Classroom
+from studentapp.models import Role, User, Classroom, Subject
 
 
 class LoginForm(FlaskForm):
@@ -32,12 +32,12 @@ class AddUserForm(FlaskForm):
     def validate_username(self, username):
         user = User.query.filter_by(username=username.data).first()
         if user is not None:
-            raise ValidationError("Username already exists! Please use another username")
+            raise ValidationError(f"Username - {username} already exists! Please use another username")
 
     def validate_email(self, email):
         user_email = User.query.filter_by(email=email.data).first()
         if user_email is not None:
-            raise ValidationError("Email already exists! Please enter another email")
+            raise ValidationError(f"Email -{email} already exists! Please enter another email")
 
 
 class AddStaffForm(FlaskForm):
@@ -72,6 +72,22 @@ class AddClassroomForm(FlaskForm):
     classroom_name = StringField("Classroom Name", validators=[DataRequired()])
     classroom_symbol = StringField("Classroom Symbol", validators=[DataRequired()])
     submit = SubmitField("Submit")
+
+
+class AddSubjectForm(FlaskForm):
+    name = StringField("Subject Name", validators=[DataRequired()])
+    code = StringField("Subject Code", validators=[DataRequired()])
+    submit = SubmitField("Submit")
+
+    def validate_name(self, name):
+        subject = Subject.query.filter_by(name=name.data).first()
+        if subject is not None:
+            raise ValidationError(f"Subject with name - {name} already exists! Please enter different name")
+
+    def validate_code(self, code):
+        subject = Subject.query.filter_by(code=code.data).first()
+        if subject is not None:
+            raise ValidationError(f"Subject with code - {code} already exists! Please enter different code")
 
 
 
