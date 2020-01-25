@@ -138,3 +138,11 @@ def add_subject():
         flash(f"{subject.name} added as a subject")
         return redirect(url_for("add_subject"))
     return render_template("add_subject.html", title="Add Subject", form=form)
+
+
+@app.route("/list_users")
+@login_required
+def list_users():
+    users = User.query.all()
+    return render_template("list_users.html", title="List Users", users=users)
+
