@@ -137,4 +137,4 @@ def add_subject():
         db.session.commit()
         flash(f"{subject.name} added as a subject")
         return redirect(url_for("add_subject"))
-    return render_template("add_subject.html", title="Add Subject")
+    return render_template("add_subject.html", title="Add Subject", form=form)
