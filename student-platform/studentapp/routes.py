@@ -143,6 +143,16 @@ def add_subject():
 @app.route("/list_users")
 @login_required
 def list_users():
-    users = User.query.all()
-    return render_template("list_users.html", title="List Users", users=users)
+    page = request.args.get("page", 1, type=int)
+    users = User.query.paginate(page, app.config["MAX_USERS_PER_PAGE"], False)
+    next_url = url_for("list_users", page=users.next_num) if users.has_next else None
+    prev_url = url_for("list_users", page=users.prev_num) if users.has_prev else None
+    return render_template("list_users.html", title="List Users", users=users.items, next_url=next_url,
+                           prev_url=prev_url)
 
+
+@app.route("/user/<id>")
+@login_required
+def user(id):
+    user = User.query.get_or_404(id, description="User not found")
+    return render_template("user.html", title="User Profile", user=user)
