@@ -2,4 +2,19 @@
 
 {% block content %}
     <h1>{{ user.username }} Profile</h1>
+    <div>
+        <img src="{{ user.get_user_avatar(size=80) }}" />
+        <hr />
+    </div>
+    <div>
+        <p>
+            Email: {{ user.email }}
+        </p>
+        <p>
+            Role: {{ user.role }}
+        </p>
+        <p>
+            Enabled/Disabled: {% if user.is_active %} Enabled {% else %} Disabled {% endif %}
+        </p>
+    </div>
 {% endblock %}

@@ -1,6 +1,7 @@
 from studentapp import db, login
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
+from studentapp.utils import avatar
 
 
 class User(db.Model, UserMixin):
@@ -20,6 +21,9 @@ class User(db.Model, UserMixin):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+    def get_user_avatar(self, size):
+        return avatar(self.email, size)
 
 
 class Person(db.Model):
