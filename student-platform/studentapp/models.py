@@ -37,9 +37,15 @@ class Person(db.Model):
     birthday = db.Column(db.DateTime)
     contact_number = db.Column(db.String(128))
     email = db.Column(db.String(128))
+    #TODO: Add contact address field?
 
     def __repr__(self):
         return f"{self.firstname} {self.surname}"
+
+    def get_person_avatar(self, size):
+        return avatar(self.email, size)
+
+    #TODO: function to format birthday to represent birthday in person profile page
 
 
 class Staff(Person):
@@ -52,6 +58,8 @@ class Student(Person):
     id = db.Column(db.Integer, primary_key=True)
     parent_guardian_name = db.Column(db.String(128))
     classroom_id = db.Column(db.Integer, db.ForeignKey("classroom.id"), nullable=False)
+
+    #TODO:Add function to get details of student class
 
 
 class Classroom(db.Model):

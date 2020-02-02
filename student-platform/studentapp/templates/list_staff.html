@@ -2,9 +2,9 @@
 
 {% block content %}
     <div>
-        {% for user in users %}
+        {% for user in staff %}
             <div>
-                Staff No: {{ user.serial_number }} | Fullname: {{ user.firstname }} {{ user.surname }} | Gender: {{ user.gender }} | Contact No: {{ user.contact_number }} | Email: {{ user.email }} | <a href="">ViewE</a>
+                Staff No: {{ user.serial_number }} | Fullname: {{ user.firstname }} {{ user.surname }} | Gender: {{ user.gender }} | Contact No: {{ user.contact_number }} | Email: {{ user.email }} | <a href="{{ url_for('staff', id=user.id) }}">View</a>
             </div>
         {% endfor %}
         {% if prev_url %}

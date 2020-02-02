@@ -157,14 +157,28 @@ def user(id):
 @app.route("/list_staff")
 @login_required
 def list_staff():
-    users, next_url, prev_url = create_pagination_for_page_view(Staff, "list_staff")
-    return render_template("list_staff.html", title="All Staff", users=users.items, next_url=next_url,
+    staff, next_url, prev_url = create_pagination_for_page_view(Staff, "list_staff")
+    return render_template("list_staff.html", title="All Staff", staff=staff.items, next_url=next_url,
                            prev_url=prev_url)
 
 
 @app.route("/list_all_students")
 @login_required
 def list_students():
-    users, next_url, prev_url = create_pagination_for_page_view(Student, "list_students")
-    return render_template("list_students.html", title="All Students", users=users.items, next_url=next_url,
+    students, next_url, prev_url = create_pagination_for_page_view(Student, "list_students")
+    return render_template("list_students.html", title="All Students", students=students.items, next_url=next_url,
                            prev_url=prev_url)
+
+
+@app.route("/staff/<id>")
+@login_required
+def staff(id):
+    staff = Staff.query.get_or_404(id, description="Staff not found")
+    return render_template("staff.html", title="Staff Profile", staff=staff)
+
+
+@app.route("/student/<id>")
+@login_required
+def student(id):
+    student = Student.query.get_or_404(id, description="Student not found")
+    return render_template("student.html", title="Student Profile", student=student)

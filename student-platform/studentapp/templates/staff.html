@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>{{ staff.firstname }} {{staff.surname }} Profile</h1>
+    <div>
+        <img src="{{ staff.get_person_avatar(size=80) }}" />
+        <hr />
+    </div>
+    <div>
+        <p>Staff No: {{ staff.serial_number }}</p>
+        <p>Firstname: {{ staff.firstname }}</p>
+        <p>Middlename: {{staff.middlename }}</p>
+        <p>Surname: {{ staff.surname }}</p>
+        <p>Gender: {{ staff.gender }}</p>
+        <p>Date of Birth: {{ staff.birthday }}</p>
+        <p>Contact No: {{ staff.contact_number }}</p>
+        <p>Email: {{ staff.email }}</p>
+    </div>
+{% endblock %}
