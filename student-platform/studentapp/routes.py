@@ -4,6 +4,7 @@ from studentapp import app, db
 from studentapp.forms import LoginForm, AddUserForm, AddStaffForm, AddStudentForm, AddClassroomForm, AddSubjectForm
 from studentapp.models import User, Staff, Student, Classroom, Subject
 from flask_login import current_user, login_user, logout_user, login_required
+from studentapp.utils import create_pagination_for_page_view
 
 
 @app.route("/")
@@ -77,7 +78,6 @@ def add_staff():
         db.session.commit()
         flash(f"{staff_user.firstname} {staff_user.surname} added as a member of staff")
         return redirect(url_for("add_staff"))
-
     return render_template("add_staff.html", title="Add Staff", form=form)
 
 
@@ -120,7 +120,6 @@ def add_classroom():
         db.session.commit()
         flash(f"{classroom.classroom_symbol} classroom added")
         return redirect(url_for("add_classroom"))
-
     return render_template("add_classroom.html", title="Add Classroom", form=form)
 
 
@@ -143,11 +142,8 @@ def add_subject():
 @app.route("/list_users")
 @login_required
 def list_users():
-    page = request.args.get("page", 1, type=int)
-    users = User.query.paginate(page, app.config["MAX_USERS_PER_PAGE"], False)
-    next_url = url_for("list_users", page=users.next_num) if users.has_next else None
-    prev_url = url_for("list_users", page=users.prev_num) if users.has_prev else None
-    return render_template("list_users.html", title="List Users", users=users.items, next_url=next_url,
+    users, next_url, prev_url = create_pagination_for_page_view(User, "list_users")
+    return render_template("list_users.html", title="All Users", users=users.items, next_url=next_url,
                            prev_url=prev_url)
 
 
@@ -156,3 +152,19 @@ def list_users():
 def user(id):
     user = User.query.get_or_404(id, description="User not found")
     return render_template("user.html", title="User Profile", user=user)
+
+
+@app.route("/list_staff")
+@login_required
+def list_staff():
+    users, next_url, prev_url = create_pagination_for_page_view(Staff, "list_staff")
+    return render_template("list_staff.html", title="All Staff", users=users.items, next_url=next_url,
+                           prev_url=prev_url)
+
+
+@app.route("/list_all_students")
+@login_required
+def list_students():
+    users, next_url, prev_url = create_pagination_for_page_view(Student, "list_students")
+    return render_template("list_students.html", title="All Students", users=users.items, next_url=next_url,
+                           prev_url=prev_url)
