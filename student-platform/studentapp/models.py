@@ -45,7 +45,9 @@ class Person(db.Model):
     def get_person_avatar(self, size):
         return avatar(self.email, size)
 
-    #TODO: function to format birthday to represent birthday in person profile page
+    def format_birthday(self):
+        formatted_birthday = self.birthday.strftime("%d %B %Y")
+        return formatted_birthday
 
 
 class Staff(Person):
@@ -59,7 +61,9 @@ class Student(Person):
     parent_guardian_name = db.Column(db.String(128))
     classroom_id = db.Column(db.Integer, db.ForeignKey("classroom.id"), nullable=False)
 
-    #TODO:Add function to get details of student class
+    def display_classroom_symbol(self):
+        classroom = Classroom.query.get(self.classroom_id)
+        return classroom.classroom_symbol
 
 
 class Classroom(db.Model):
