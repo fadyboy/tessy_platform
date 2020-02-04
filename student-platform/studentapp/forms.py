@@ -3,7 +3,7 @@ from wtforms import StringField, PasswordField, SubmitField, SelectField
 from wtforms.fields.html5 import DateField
 from wtforms_sqlalchemy.fields import QuerySelectField
 from wtforms.validators import DataRequired, ValidationError, Email, EqualTo
-from studentapp.models import Role, User, Classroom, Subject
+from studentapp.models import Role, User, Classroom, Subject, Staff, Student
 
 
 class LoginForm(FlaskForm):
@@ -32,12 +32,12 @@ class AddUserForm(FlaskForm):
     def validate_username(self, username):
         user = User.query.filter_by(username=username.data).first()
         if user is not None:
-            raise ValidationError(f"Username - {username} already exists! Please use another username")
+            raise ValidationError(f"Username - {username.data} already exists! Please use another username")
 
     def validate_email(self, email):
         user_email = User.query.filter_by(email=email.data).first()
         if user_email is not None:
-            raise ValidationError(f"Email -{email} already exists! Please enter another email")
+            raise ValidationError(f"Email -{email.data} already exists! Please enter another email")
 
 
 class AddStaffForm(FlaskForm):
@@ -52,7 +52,10 @@ class AddStaffForm(FlaskForm):
     email = StringField("Email", validators=[DataRequired(), Email()])
     submit = SubmitField("Submit")
 
-    #TODO: Add validation to check serial number is unique
+    def validate_serial_number(self, serial_number):
+        serial = Staff.query.filter_by(serial_number=serial_number.data).first()
+        if serial is not None:
+            raise ValidationError(f"{serial.serial_number} is already in use! Please enter another staff number")
 
 
 # helper function for query factory for classrooms dropdown field
@@ -64,10 +67,15 @@ class AddStudentForm(AddStaffForm):
     serial_number = StringField("Student Number", validators=[DataRequired()])
     contact_number = StringField("Parent/Guardian Contact Number")
     email = StringField("Parent/Guardian Email", validators=[DataRequired(), Email()])
-    parent_guardian_name = StringField("Parent/Guardian name") #TODO: Validation for parents name
+    parent_guardian_name = StringField("Parent/Guardian name", validators=[DataRequired()])
     classrooms = QuerySelectField(query_factory=classroom_query, allow_blank=True, blank_text="Select class",
                                   get_label="classroom_symbol", get_pk=get_pk)
     submit = SubmitField("Submit")
+
+    def validate_serial_number(self, serial_number):
+        serial = Student.query.filter_by(serial_number=serial_number.data).first()
+        if serial is not None:
+            raise ValidationError(f"{serial.serial_number} is already in use! Please enter another student number")
 
 
 class AddClassroomForm(FlaskForm):
