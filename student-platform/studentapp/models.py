@@ -37,7 +37,7 @@ class Person(db.Model):
     birthday = db.Column(db.DateTime)
     contact_number = db.Column(db.String(128))
     email = db.Column(db.String(128))
-    #TODO: Add contact address field?
+    address = db.Column(db.String(200))
 
     def __repr__(self):
         return f"{self.firstname} {self.surname}"
