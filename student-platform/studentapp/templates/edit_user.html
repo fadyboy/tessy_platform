@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Edit {{ user.username }} Profile</h1>
+    <p>Username: {{user.username }}</p>
+    <p>Email: {{ user.email }}</p>
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <p>
+            {{ form.password.label }} <br/>
+            {{ form.password(size=32) }}
+            {% for error in form.password.errors %}
+               <span style="color: red;">{{ error }}</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.password2.label }} <br/>
+            {{ form.password2(size=32) }}
+            {% for error in form.password2.errors %}
+                <span style="color: red;">{{ error }}</span>
+            {% endfor %}
+        </p>
+        <p>
+            {{ form.is_active.label }} <br/>
+            {{ form.is_active() }}
+        </p>
+        <p>
+            {{ form.roles.label }}
+            {{ form.roles() }}
+        </p>
+        <p> {{ form.submit() }}</p>
+    </form>
+{% endblock %}

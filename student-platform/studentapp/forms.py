@@ -39,6 +39,17 @@ class AddUserForm(FlaskForm):
         if user_email is not None:
             raise ValidationError(f"Email -{email.data} already exists! Please enter another email")
 
+    #TODO: Add validation for password length
+    #TODO: Add message for password mismatch?
+
+
+class EditUserForm(FlaskForm):
+    password = PasswordField("Password")
+    password2 = PasswordField("Repeat Password", validators=[EqualTo("password")])
+    is_active = SelectField("Enable/Disable", choices=[("", ""), ("true", "Enable"), ("false", "Disable")])
+    roles = QuerySelectField(query_factory=roles_query, allow_blank=True, get_label="name", get_pk=get_pk)
+    submit = SubmitField("Submit")
+
 
 class AddStaffForm(FlaskForm):
     serial_number = StringField("Staff Number", validators=[DataRequired()])

@@ -1,10 +1,12 @@
 from flask import render_template, flash, redirect, url_for, request
 from werkzeug.urls import url_parse
 from studentapp import app, db
-from studentapp.forms import LoginForm, AddUserForm, AddStaffForm, AddStudentForm, AddClassroomForm, AddSubjectForm
+from studentapp.forms import LoginForm, AddUserForm, AddStaffForm, AddStudentForm, AddClassroomForm, AddSubjectForm, \
+    EditUserForm
 from studentapp.models import User, Staff, Student, Classroom, Subject
 from flask_login import current_user, login_user, logout_user, login_required
 from studentapp.utils import create_pagination_for_page_view
+from distutils.util import strtobool
 
 
 @app.route("/")
@@ -152,6 +154,25 @@ def list_users():
 def user(id):
     user = User.query.get_or_404(id, description="User not found")
     return render_template("user.html", title="User Profile", user=user)
+
+
+@app.route("/edit_user/<id>", methods=["GET", "POST"])
+@login_required
+def edit_user(id):
+    form = EditUserForm()
+    user = User.query.get(id)
+    if form.validate_on_submit():
+        if form.password.data != "":
+            user.set_password_hash(form.password.data)
+        if form.is_active.data != "":
+            user.is_active = bool(strtobool(form.is_active.data))
+        if form.roles.data is not None:
+            user.role = form.roles.data
+        db.session.commit()
+        flash("Changes have been submitted")
+        return redirect(url_for("user", id=id))
+
+    return render_template("edit_user.html", title="Edit User Profile", form=form, user=user)
 
 
 @app.route("/list_staff")
