@@ -75,7 +75,9 @@ def add_staff():
             gender=form.gender.data,
             birthday=form.birthday.data,
             contact_number=form.contact_number.data,
-            email=form.email.data)
+            email=form.email.data,
+            address=form.address.data
+        )
         db.session.add(staff_user)
         db.session.commit()
         flash(f"{staff_user.firstname} {staff_user.surname} added as a member of staff")
@@ -100,6 +102,7 @@ def add_student():
             contact_number=form.contact_number.data,
             email=form.email.data,
             parent_guardian_name=form.parent_guardian_name.data,
+            address=form.address.data,
             classroom_id=classroom.id
         )
         db.session.add(student)

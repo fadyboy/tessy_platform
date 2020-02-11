@@ -61,6 +61,7 @@ class AddStaffForm(FlaskForm):
     birthday = DateField("Birthday", format="%Y-%m-%d", validators=[DataRequired()])
     contact_number = StringField("Contact number")
     email = StringField("Email", validators=[DataRequired(), Email()])
+    address = StringField("Address")
     submit = SubmitField("Submit")
 
     def validate_serial_number(self, serial_number):
@@ -79,6 +80,7 @@ class AddStudentForm(AddStaffForm):
     contact_number = StringField("Parent/Guardian Contact Number")
     email = StringField("Parent/Guardian Email", validators=[DataRequired(), Email()])
     parent_guardian_name = StringField("Parent/Guardian name", validators=[DataRequired()])
+    address = StringField("Address")
     classrooms = QuerySelectField(query_factory=classroom_query, allow_blank=True, blank_text="Select class",
                                   get_label="classroom_symbol", get_pk=get_pk)
     submit = SubmitField("Submit")

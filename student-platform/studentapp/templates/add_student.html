@@ -60,6 +60,10 @@
             {{ form.parent_guardian_name(size=64) }}
         </p>
         <p>
+            {{ form.address.label }}<br/>
+            {{ form.address(size=64) }}
+        </p>
+        <p>
             {{ form.classrooms() }}
         </p>
         <p>{{ form.submit() }}</p>

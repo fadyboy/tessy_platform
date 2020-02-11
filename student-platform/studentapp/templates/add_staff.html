@@ -55,6 +55,10 @@
                 <span style="color: red">{{ error }}</span>
             {% endfor %}
         </p>
+        <p>
+            {{ form.address.label }}<br/>
+            {{ form.address(size=64) }}
+        </p>
         <p> {{ form.submit() }}</p>
 
     </form>
