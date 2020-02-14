@@ -1,9 +1,10 @@
 {% extends "base.html" %}
 
 {% block content %}
-    {% for student in students %}
-        <div>
-            Fullname: {{ student.firstname }} {{ student.surname }} | Gender: {{ student.gender }} | {{ student.display_classroom_symbol() }} | <a href="{{ url_for('student', id=student.id) }}">View Student</a>
-        </div>
-    {% endfor %}
+{% for student in students %}
+<div>
+    Fullname: {{ student.firstname }} {{ student.surname }} | Gender: {{ student.gender }} | {{
+    student.display_classroom_symbol() }} | <a href="{{ url_for('student', id=student.id) }}">View Student</a>
+</div>
+{% endfor %}
 {% endblock %}

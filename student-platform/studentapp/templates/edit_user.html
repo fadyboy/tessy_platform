@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Edit {{ user.username }} Profile</h1>
+    <h1>Edit User - {{ user.username }} Profile</h1>
     <p>Username: {{user.username }}</p>
     <p>Email: {{ user.email }}</p>
     <form action="" method="post" novalidate>
@@ -23,10 +23,16 @@
         <p>
             {{ form.is_active.label }} <br/>
             {{ form.is_active() }}
+            {% for error in form.is_active.errors %}
+                <span style="color:red;">{{ error }}</span>
+            {% endfor %}
         </p>
         <p>
             {{ form.roles.label }}
             {{ form.roles() }}
+            {% for error in form.roles.errors %}
+                <span style="color:red;">{{ error }}</span>
+            {% endfor %}
         </p>
         <p> {{ form.submit() }}</p>
     </form>

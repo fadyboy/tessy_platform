@@ -2,7 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, SelectField
 from wtforms.fields.html5 import DateField
 from wtforms_sqlalchemy.fields import QuerySelectField
-from wtforms.validators import DataRequired, ValidationError, Email, EqualTo
+from wtforms.validators import DataRequired, ValidationError, Email, EqualTo, Length
 from studentapp.models import Role, User, Classroom, Subject, Staff, Student
 
 
@@ -11,9 +11,11 @@ class LoginForm(FlaskForm):
     password = PasswordField("Password", validators=[DataRequired()])
     submit = SubmitField("Log In")
 
+
 # Helper function for the query_factory in roles dropdown field
 def roles_query():
     return Role.query
+
 
 # Helper function to resolve Value error for QuerySelectField
 def get_pk(obj):
@@ -23,8 +25,10 @@ def get_pk(obj):
 class AddUserForm(FlaskForm):
     username = StringField("Username", validators=[DataRequired()])
     email = StringField("Email", validators=[DataRequired(), Email()])
-    password = PasswordField("Password", validators=[DataRequired()])
-    password2 = PasswordField("Repeat Password", validators=[DataRequired(), EqualTo("password")])
+    password = PasswordField("Password", validators=[DataRequired(),
+                                                     Length(min=6, message="Password must have at least 6 characters")])
+    password2 = PasswordField("Repeat Password",
+                              validators=[DataRequired(), EqualTo("password", message="Passwords must match")])
     roles = QuerySelectField(query_factory=roles_query, allow_blank=True, get_label="name", get_pk=get_pk,
                              validators=[DataRequired()])
     submit = SubmitField("Submit")
@@ -39,15 +43,16 @@ class AddUserForm(FlaskForm):
         if user_email is not None:
             raise ValidationError(f"Email -{email.data} already exists! Please enter another email")
 
-    #TODO: Add validation for password length
-    #TODO: Add message for password mismatch?
-
 
 class EditUserForm(FlaskForm):
-    password = PasswordField("Password")
-    password2 = PasswordField("Repeat Password", validators=[EqualTo("password")])
-    is_active = SelectField("Enable/Disable", choices=[("", ""), ("true", "Enable"), ("false", "Disable")])
-    roles = QuerySelectField(query_factory=roles_query, allow_blank=True, get_label="name", get_pk=get_pk)
+    password = PasswordField("Password", validators=[DataRequired(),
+                                                     Length(min=6, message="Password must have at least 6 characters")])
+    password2 = PasswordField("Repeat Password",
+                              validators=[EqualTo("password", message="Passwords must match"), DataRequired()])
+    is_active = SelectField("Enable/Disable", choices=[("", ""), ("true", "Enable"), ("false", "Disable")],
+                            validators=[DataRequired()])
+    roles = QuerySelectField(query_factory=roles_query, allow_blank=True, get_label="name", get_pk=get_pk,
+                             validators=[DataRequired()])
     submit = SubmitField("Submit")
 
 
@@ -59,8 +64,8 @@ class AddStaffForm(FlaskForm):
     gender = SelectField("Gender", choices=[("", ""), ("Male", "Male"), ("Female", "Female")],
                          validators=[DataRequired()])
     birthday = DateField("Birthday", format="%Y-%m-%d", validators=[DataRequired()])
-    contact_number = StringField("Contact number")
-    email = StringField("Email", validators=[DataRequired(), Email()])
+    contact_number = StringField("Contact Number")
+    email = StringField("Email", validators=[DataRequired(), Email("Please enter valid email")])
     address = StringField("Address")
     submit = SubmitField("Submit")
 
@@ -68,6 +73,17 @@ class AddStaffForm(FlaskForm):
         serial = Staff.query.filter_by(serial_number=serial_number.data).first()
         if serial is not None:
             raise ValidationError(f"{serial.serial_number} is already in use! Please enter another staff number")
+
+
+class EditStaffForm(FlaskForm):
+    firstname = StringField("Firstname", validators=[DataRequired(message="Firstname is required")])
+    middlename = StringField("Middlename")
+    surname = StringField("Surname", validators=[DataRequired(message="Surname is required")])
+    contact_number = StringField("Contact Number", validators=[DataRequired(message="Contact Number is required")])
+    email = StringField("Email",
+                        validators=[Email(message="Enter valid email"), DataRequired(message="Email is required")])
+    address = StringField("Address", validators=[DataRequired(message="Address is required")])
+    submit = SubmitField("Submit")
 
 
 # helper function for query factory for classrooms dropdown field
@@ -82,13 +98,22 @@ class AddStudentForm(AddStaffForm):
     parent_guardian_name = StringField("Parent/Guardian name", validators=[DataRequired()])
     address = StringField("Address")
     classrooms = QuerySelectField(query_factory=classroom_query, allow_blank=True, blank_text="Select class",
-                                  get_label="classroom_symbol", get_pk=get_pk)
+                                  get_label="classroom_symbol", get_pk=get_pk, validators=[DataRequired()])
     submit = SubmitField("Submit")
 
     def validate_serial_number(self, serial_number):
         serial = Student.query.filter_by(serial_number=serial_number.data).first()
         if serial is not None:
             raise ValidationError(f"{serial.serial_number} is already in use! Please enter another student number")
+
+
+class EditStudentForm(EditStaffForm):
+    contact_number = StringField("Parent/Guardian Contact Number", validators=[DataRequired()])
+    email = StringField("Parent/Guardian Email", validators=[DataRequired()])
+    address = StringField("Address", validators=[DataRequired()])
+    classrooms = QuerySelectField(query_factory=classroom_query, allow_blank=True, blank_text="Select class",
+                                  get_label="classroom_symbol", get_pk=get_pk,
+                                  validators=[DataRequired(message="Please select a class")])
 
 
 class AddClassroomForm(FlaskForm):
@@ -111,10 +136,3 @@ class AddSubjectForm(FlaskForm):
         subject = Subject.query.filter_by(code=code.data).first()
         if subject is not None:
             raise ValidationError(f"Subject with code - {code} already exists! Please enter different code")
-
-
-
-
-
-
-

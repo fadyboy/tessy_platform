@@ -2,7 +2,7 @@ from flask import render_template, flash, redirect, url_for, request
 from werkzeug.urls import url_parse
 from studentapp import app, db
 from studentapp.forms import LoginForm, AddUserForm, AddStaffForm, AddStudentForm, AddClassroomForm, AddSubjectForm, \
-    EditUserForm
+    EditUserForm, EditStaffForm, EditStudentForm
 from studentapp.models import User, Staff, Student, Classroom, Subject
 from flask_login import current_user, login_user, logout_user, login_required
 from studentapp.utils import create_pagination_for_page_view
@@ -165,12 +165,9 @@ def edit_user(id):
     form = EditUserForm()
     user = User.query.get(id)
     if form.validate_on_submit():
-        if form.password.data != "":
-            user.set_password_hash(form.password.data)
-        if form.is_active.data != "":
-            user.is_active = bool(strtobool(form.is_active.data))
-        if form.roles.data is not None:
-            user.role = form.roles.data
+        user.set_password_hash(form.password.data)
+        user.is_active = bool(strtobool(form.is_active.data))
+        user.role = form.roles.data
         db.session.commit()
         flash("Changes have been submitted")
         return redirect(url_for("user", id=id))
@@ -206,3 +203,41 @@ def staff(id):
 def student(id):
     student = Student.query.get_or_404(id, description="Student not found")
     return render_template("student.html", title="Student Profile", student=student)
+
+
+@app.route("/edit_staff/<id>", methods=["GET", "POST"])
+@login_required
+def edit_staff(id):
+    form = EditStaffForm()
+    staff = Staff.query.get(id)
+    if form.validate_on_submit():
+        staff.firstname = form.firstname.data
+        staff.middlename = form.middlename.data
+        staff.surname = form.surname.data
+        staff.contact_number = form.contact_number.data
+        staff.email = form.email.data
+        staff.address = form.address.data
+        db.session.commit()
+        flash("Changes have been submitted")
+        return redirect(url_for("staff", id=id))
+    return render_template("edit_staff.html", title="Edit Staff Profile", form=form, staff=staff)
+
+
+@app.route("/edit_student/<id>", methods=["GET", "POST"])
+@login_required
+def edit_student(id):
+    form = EditStudentForm()
+    student = Student.query.get(id)
+    if form.validate_on_submit():
+        classroom = form.classrooms.data
+        student.firstname = form.firstname.data
+        student.middlename = form.middlename.data
+        student.surname = form.surname.data
+        student.contact_number = form.contact_number.data
+        student.email = form.email.data
+        student.address = form.address.data
+        student.classroom_id = classroom.id
+        db.session.commit()
+        flash("Changes have been submitted")
+        return redirect(url_for("student", id=id))
+    return render_template("edit_student.html", title="Edit Student Profile", form=form, student=student)

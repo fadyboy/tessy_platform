@@ -15,5 +15,9 @@
         <p>Date of Birth: {{ staff.format_birthday() }}</p>
         <p>Contact No: {{ staff.contact_number }}</p>
         <p>Email: {{ staff.email }}</p>
+        <p>Address: {{ staff.address }}</p>
+    </div>
+    <div>
+        <p><a href="{{ url_for('edit_staff', id=staff.id) }}">Edit Staff Profile</a></p>
     </div>
 {% endblock %}

@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h1>Edit Student - {{ student.firstname }} {{ student.surname }}</h1>
+    <div>
+        <p>Student Number: {{ student.serial_number }}</p>
+        <form action="" method="post" novalidate>
+            {{ form.hidden_tag() }}
+            <p>
+                {{ form.firstname.label }}<br/>
+                {{ form.firstname(size=32, value=student.firstname) }}
+                {% for error in form.firstname.errors %}
+                    <span style="color:red;">{{ error }}</span>
+                {% endfor %}
+            </p>
+            <p>
+                {{ form.middlename.label }}<br/>
+                {{ form.middlename(size=32, value=student.middlename) }}
+            </p>
+            <p>
+                {{ form.surname.label }}<br/>
+                {{ form.surname(size=32, value=student.surname) }}
+                {% for error in form.surname.errors %}
+                    <span style="color:red;">{{ error }}</span>
+                {% endfor %}
+            </p>
+            <p>
+                {{ form.contact_number.label }}<br/>
+                {{ form.contact_number(size=32, value=student.contact_number) }}
+                {% for error in form.contact_number.errors %}
+                    <span style="color:red;">{{ error }}</span>
+                {% endfor %}
+            </p>
+            <p>
+                {{ form.email.label }}<br/>
+                {{ form.email(size=32, value=student.email) }}
+                {% for error in form.email.errors %}
+                    <span style="color:red;">{{ error }}</span>
+                {% endfor %}
+            </p>
+            <p>
+                {{ form.address.label }}<br/>
+                {{ form.address(size=64, value=student.address) }}
+                {% for error in form.address.errors %}
+                    <span style="color:red;">{{ error }}</span>
+                {% endfor %}
+            </p>
+            <p>
+                {{ form.classrooms() }}&nbsp current class {{ student.display_classroom_symbol() }}
+                {% for error in form.classrooms.errors %}
+                    <span style="color:red;">{{ error }}</span>
+                {% endfor %}
+            </p>
+            <p>
+                {{ form.submit() }}
+            </p>
+        </form>
+    </div>
+
+{% endblock %}

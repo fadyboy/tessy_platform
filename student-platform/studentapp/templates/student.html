@@ -15,5 +15,10 @@
         <p>Parent/Guardian Contact No: {{ student.contact_number }}</p>
         <p>Parent/Guardian Email: {{ student.email }}</p>
         <p>Parent/Guardian Name: {{ student.parent_guardian_name }}</p>
+        <p>Address: {{student.address }}</p>
+        <p>Current class: {{ student.display_classroom_symbol() }}</p>
+    </div>
+    <div>
+        <a href="{{ url_for('edit_student', id=student.id) }}">Edit Student</a>
     </div>
 {% endblock %}
