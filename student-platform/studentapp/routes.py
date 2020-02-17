@@ -2,7 +2,7 @@ from flask import render_template, flash, redirect, url_for, request
 from werkzeug.urls import url_parse
 from studentapp import app, db
 from studentapp.forms import LoginForm, AddUserForm, AddStaffForm, AddStudentForm, AddClassroomForm, AddSubjectForm, \
-    EditUserForm, EditStaffForm, EditStudentForm
+    EditUserForm, EditStaffForm, EditStudentForm, EditSubjectForm
 from studentapp.models import User, Staff, Student, Classroom, Subject
 from flask_login import current_user, login_user, logout_user, login_required
 from studentapp.utils import create_pagination_for_page_view
@@ -241,3 +241,24 @@ def edit_student(id):
         flash("Changes have been submitted")
         return redirect(url_for("student", id=id))
     return render_template("edit_student.html", title="Edit Student Profile", form=form, student=student)
+
+
+@app.route("/list_subjects")
+@login_required
+def list_subjects():
+    subjects = Subject.query.all()
+    return render_template("list_subjects.html", title="List Subjects", subjects=subjects)
+
+
+@app.route("/edit_subject/<id>", methods=["GET", "POST"])
+@login_required
+def edit_subject(id):
+    subject = Subject.query.get(id)
+    form = EditSubjectForm()
+    if form.validate_on_submit():
+        subject.name = form.name.data
+        subject.code = form.code.data
+        db.session.commit()
+        flash("Changes have been submitted")
+        return redirect(url_for("list_subjects"))
+    return render_template("edit_subject.html", title="Edit Subject", subject=subject, form=form)

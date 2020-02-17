@@ -136,3 +136,10 @@ class AddSubjectForm(FlaskForm):
         subject = Subject.query.filter_by(code=code.data).first()
         if subject is not None:
             raise ValidationError(f"Subject with code - {code} already exists! Please enter different code")
+
+
+class EditSubjectForm(FlaskForm):
+    name = StringField("Subject Name")
+    code = StringField("Subject Code")
+    submit = SubmitField("Submit Change")
+
