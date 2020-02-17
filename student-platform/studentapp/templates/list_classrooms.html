@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Available Classrooms</h1>
+{% for class in classrooms %}
+<p>{{ class.classroom_name }} | {{ class.classroom_symbol }} | <a href="{{ url_for('edit_classroom', id=class.id) }}">Edit
+    classroom</a></p>
+{% endfor %}
+{% endblock %}

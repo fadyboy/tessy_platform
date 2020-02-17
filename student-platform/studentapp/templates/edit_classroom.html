@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Edit {{ classroom.classroom_name }}</h1>
+<form action="" method="post" novalidate>
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.classroom_name.label }}<br/>
+        {{ form.classroom_name(size=32, value=classroom.classroom_name) }}
+    </p>
+    <p>
+        {{ form.classroom_symbol.label }}<br/>
+        {{ form.classroom_symbol(size=8, value=classroom.classroom_symbol) }}
+    </p>
+    <p>{{ form.submit() }}</p>
+</form>
+<a href="{{ url_for('list_classrooms') }}"><button>Cancel</button></a>
+{% endblock %}

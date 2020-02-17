@@ -122,6 +122,12 @@ class AddClassroomForm(FlaskForm):
     submit = SubmitField("Submit")
 
 
+class EditClassroomForm(FlaskForm):
+    classroom_name = StringField("Classroom Name")
+    classroom_symbol = StringField("Classroom Symbol")
+    submit = SubmitField("Submit Changes")
+
+
 class AddSubjectForm(FlaskForm):
     name = StringField("Subject Name", validators=[DataRequired()])
     code = StringField("Subject Code", validators=[DataRequired()])

@@ -2,6 +2,7 @@
 
 {% block content %}
     <h1>Add Classroom</h1>
+    <h3><a href="{{ url_for('list_classrooms') }}">View list of Classrooms</a></h3>
     <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
         <p>

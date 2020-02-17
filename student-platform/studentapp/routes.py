@@ -2,7 +2,7 @@ from flask import render_template, flash, redirect, url_for, request
 from werkzeug.urls import url_parse
 from studentapp import app, db
 from studentapp.forms import LoginForm, AddUserForm, AddStaffForm, AddStudentForm, AddClassroomForm, AddSubjectForm, \
-    EditUserForm, EditStaffForm, EditStudentForm, EditSubjectForm
+    EditUserForm, EditStaffForm, EditStudentForm, EditSubjectForm, EditClassroomForm
 from studentapp.models import User, Staff, Student, Classroom, Subject
 from flask_login import current_user, login_user, logout_user, login_required
 from studentapp.utils import create_pagination_for_page_view
@@ -262,3 +262,24 @@ def edit_subject(id):
         flash("Changes have been submitted")
         return redirect(url_for("list_subjects"))
     return render_template("edit_subject.html", title="Edit Subject", subject=subject, form=form)
+
+
+@app.route("/list_classrooms")
+@login_required
+def list_classrooms():
+    classrooms = Classroom.query.all()
+    return render_template("list_classrooms.html", title="List Classrooms", classrooms=classrooms)
+
+
+@app.route("/edit_classroom/<id>", methods=["GET", "POST"])
+@login_required
+def edit_classroom(id):
+    classroom = Classroom.query.get(id)
+    form = EditClassroomForm()
+    if form.validate_on_submit():
+        classroom.classroom_name = form.classroom_name.data
+        classroom.classroom_symbol = form.classroom_symbol.data
+        db.session.commit()
+        flash("Changes have been submitted")
+        return redirect(url_for("list_classrooms"))
+    return render_template("edit_classroom.html", title="Edit Classrooms", form=form, classroom=classroom)
