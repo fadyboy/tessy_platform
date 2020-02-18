@@ -7,4 +7,12 @@
     student.display_classroom_symbol() }} | <a href="{{ url_for('student', id=student.id) }}">View Student</a>
 </div>
 {% endfor %}
-{% endblock %}
+<div>
+    {% if next_url %}
+    <a href="{{ next_url }}">Next Page</a>
+    {% endif %}
+    {% if prev_url %}
+    <a href="{{ prev_url }}">Previous Page</a>
+    {% endif %}
+    {% endblock %}
+</div>
