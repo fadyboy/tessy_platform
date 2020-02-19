@@ -103,7 +103,15 @@ class Subject(db.Model):
         return f"Subject: {self.name}"
 
 
+class Session(db.Model):
+    __tablename__ = "session"
+    id = db.Column(db.Integer, primary_key=True)
+    session = db.Column(db.String(16), unique=True, index=True)
+
+    def __repr__(self):
+        return f"Session: {self.session}"
+
+
 @login.user_loader
 def user_loader(id):
     return User.query.get(int(id))
-
