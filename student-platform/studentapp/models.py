@@ -103,13 +103,22 @@ class Subject(db.Model):
         return f"Subject: {self.name}"
 
 
-class Session(db.Model):
-    __tablename__ = "session"
+class Sessions(db.Model):
+    __tablename__ = "sessions"
     id = db.Column(db.Integer, primary_key=True)
     session = db.Column(db.String(16), unique=True, index=True)
 
     def __repr__(self):
         return f"Session: {self.session}"
+
+
+class ScoreType(db.Model):
+    __tablename__ = "score_type"
+    id = db.Column(db.Integer, primary_key=True)
+    score_type = db.Column(db.String(32), unique=True, index=True)
+
+    def __repr__(self):
+        return f"Score: {self.score_type}"
 
 
 @login.user_loader

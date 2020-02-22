@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+<form action="" method="post" novalidate>
+    {{ form.hidden_tag() }}
+    <p>
+        {{ form.firstname.label }}<br/>
+        {{ form.firstname(size=32) }}
+    </p>
+    <p>
+        {{ form.middlename.label }}<br/>
+        {{ form.middlename(size=32) }}
+    </p>
+    <p>
+        {{ form.surname.label }}<br/>
+        {{ form.surname(size=32) }}
+    </p>
+    <p>
+        {{ form.contact_number.label }}<br/>
+        {{ form.contact_number(size=32) }}
+    </p>
+    <p>
+        {{ form.email.label }}<br/>
+        {{ form.email(size=32) }}
+    </p>
+    <p>
+        {{ form.address.label }}<br/>
+        {{ form.address(size=32) }}
+    </p>
+    <p>
+        {{ form.classrooms() }}
+    </p>
+</form>
+{% endblock %}

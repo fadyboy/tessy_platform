@@ -2,7 +2,7 @@ from flask import render_template, flash, redirect, url_for, request
 from werkzeug.urls import url_parse
 from studentapp import app, db
 from studentapp.forms import LoginForm, AddUserForm, AddStaffForm, AddStudentForm, AddClassroomForm, AddSubjectForm, \
-    EditUserForm, EditStaffForm, EditStudentForm, EditSubjectForm, EditClassroomForm
+    EditUserForm, EditStaffForm, EditStudentForm, EditSubjectForm, EditClassroomForm, EnterStudentScores
 from studentapp.models import User, Staff, Student, Classroom, Subject
 from flask_login import current_user, login_user, logout_user, login_required
 from studentapp.utils import create_pagination_for_page_view
@@ -58,7 +58,7 @@ def add_user():
         db.session.add(user)
         db.session.commit()
         flash(f"{user.username} user added")
-        return redirect(url_for("add_user")) # redirect used to clear form
+        return redirect(url_for("add_user"))  # redirect used to clear form
     return render_template("add_user.html", title="Add User", form=form)
 
 
@@ -68,7 +68,7 @@ def add_staff():
     form = AddStaffForm()
     if form.validate_on_submit():
         staff_user = Staff(
-            serial_number = form.serial_number.data,
+            serial_number=form.serial_number.data,
             firstname=form.firstname.data,
             middlename=form.middlename.data,
             surname=form.surname.data,
@@ -226,8 +226,20 @@ def edit_staff(id):
 @app.route("/edit_student/<id>", methods=["GET", "POST"])
 @login_required
 def edit_student(id):
-    form = EditStudentForm()
     student = Student.query.get(id)
+    # form = EditStudentForm() #TODO:instantiate form with student details to get default in select field
+    form = EditStudentForm(
+        firstname=student.firstname,
+        middlename=student.middlename,
+        surname=student.surname,
+        contact_number=student.contact_number,
+        email=student.email,
+        address=student.address,
+        classrooms=student
+    )
+    """
+    form = EditStudentForm(firstname=student.firstname, surname=student.surname...classroom_id=student.classroom_id)
+    """
     if form.validate_on_submit():
         classroom = form.classrooms.data
         student.firstname = form.firstname.data
@@ -240,7 +252,7 @@ def edit_student(id):
         db.session.commit()
         flash("Changes have been submitted")
         return redirect(url_for("student", id=id))
-    return render_template("edit_student.html", title="Edit Student Profile", form=form, student=student)
+    return render_template("edit_stud.html", title="Edit Student Profile", form=form, student=student)
 
 
 @app.route("/list_subjects")
@@ -283,3 +295,32 @@ def edit_classroom(id):
         flash("Changes have been submitted")
         return redirect(url_for("list_classrooms"))
     return render_template("edit_classroom.html", title="Edit Classrooms", form=form, classroom=classroom)
+
+
+@app.route("/enter_student_scores", methods=["GET", "POST"])
+@login_required
+def enter_student_scores():
+    form = EnterStudentScores()
+    students_list = []
+    if form.validate_on_submit():
+        subject = form.subject.data
+        classroom = form.classroom.data
+        students_query = Student.query.filter_by(classroom_id=classroom.id)
+        for student in students_query:
+            students_list.append(student)
+        score_type = form.score_type.data
+        sessions = form.sessions.data
+        return redirect(url_for("submit_student_scores", subject=subject, classroom=classroom, score_type=score_type,
+                                sessions=sessions, students=students_list))
+    return render_template("student_score.html", title="Student Scores", form=form)
+
+
+@app.route("/submit_student_scores", methods=["GET", "POST"])
+@login_required
+def submit_student_scores():
+    subject = request.args.get("subject")
+    classroom = request.args.get("classroom")
+    students = request.args.getlist("students")
+    print(f"studs - {students}")
+    return render_template("submit_student_scores.html", title="Submit Student Scores", subject=subject,
+                           classroom=classroom, students=students)

@@ -3,7 +3,7 @@ from wtforms import StringField, PasswordField, SubmitField, SelectField
 from wtforms.fields.html5 import DateField
 from wtforms_sqlalchemy.fields import QuerySelectField
 from wtforms.validators import DataRequired, ValidationError, Email, EqualTo, Length
-from studentapp.models import Role, User, Classroom, Subject, Staff, Student
+from studentapp.models import Role, User, Classroom, Subject, Staff, Student, Sessions, ScoreType
 
 
 class LoginForm(FlaskForm):
@@ -149,3 +149,30 @@ class EditSubjectForm(FlaskForm):
     code = StringField("Subject Code")
     submit = SubmitField("Submit Change")
 
+
+def subjects_query():
+    return Subject.query
+
+
+def sessions_query():
+    return Sessions.query
+
+
+def score_type_query():
+    return ScoreType.query
+
+
+class EnterStudentScores(FlaskForm):
+    subject = QuerySelectField(query_factory=subjects_query, allow_blank=True, blank_text="Select Subject",
+                               get_label="name", get_pk=get_pk,
+                               validators=[DataRequired(message="Please select a subject")])
+    classroom = QuerySelectField(query_factory=classroom_query, allow_blank=True, blank_text="Select Classroom",
+                                 get_label="classroom_symbol",
+                                 get_pk=get_pk, validators=[DataRequired(message="Please select a classroom")])
+    score_type = QuerySelectField(query_factory=score_type_query, allow_blank=True, blank_text="Select Score type",
+                                  get_label="score_type", get_pk=get_pk,
+                                  validators=[DataRequired(message="Please select score type")])
+    sessions = QuerySelectField(query_factory=sessions_query, allow_blank=True, blank_text="Select Session",
+                               get_label="session", get_pk=get_pk,
+                               validators=[DataRequired(message="Please select a session")])
+    submit = SubmitField("Submit")

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div>
+        <p>{{ subject }}</p>
+        <p>{{ classroom }}</p>
+        {% for student in students %}
+        <p>{{ student }}</p>
+        {% endfor %}
+    </div>
+{% endblock %}
