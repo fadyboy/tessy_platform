@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div>
+    <p>Term: {{ term }}</p>
+    <p>Session: {{ sessions.session }}</p>
+    <p>Subject: {{ subject.name }}</p>
+    <p>Classroom: {{ classroom.classroom_symbol }}</p>
+    <table>
+        {% for student in students %}
+        <tr>
+            <td>{{ student }}</td>
+            <td>
+                <a href="{{ url_for('submit_scores', student_id=student.id, classroom_id=classroom.id, subject_id=subject.id, term=term, sessions_id=sessions.id) }}">Enter
+                    Score</a></td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+{% endblock %}

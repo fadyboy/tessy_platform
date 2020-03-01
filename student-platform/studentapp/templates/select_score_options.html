@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
+<h1>Select options for student scores</h1>
 <div>
     <form action="" method="post" novalidate>
         {{ form.hidden_tag() }}
@@ -11,7 +12,7 @@
             {{ form.classroom() }}
         </p>
         <p>
-            {{ form.score_type() }}
+            {{ form.term() }}
         </p>
         <p>{{ form.sessions() }}</p>
         <p>{{ form.submit() }}</p>

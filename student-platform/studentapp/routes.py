@@ -2,8 +2,9 @@ from flask import render_template, flash, redirect, url_for, request
 from werkzeug.urls import url_parse
 from studentapp import app, db
 from studentapp.forms import LoginForm, AddUserForm, AddStaffForm, AddStudentForm, AddClassroomForm, AddSubjectForm, \
-    EditUserForm, EditStaffForm, EditStudentForm, EditSubjectForm, EditClassroomForm, EnterStudentScores
-from studentapp.models import User, Staff, Student, Classroom, Subject
+    EditUserForm, EditStaffForm, EditStudentForm, EditSubjectForm, EditClassroomForm, EnterStudentScores, \
+    SubmitStudentScores
+from studentapp.models import User, Staff, Student, Classroom, Subject, Sessions, StudentResults
 from flask_login import current_user, login_user, logout_user, login_required
 from studentapp.utils import create_pagination_for_page_view
 from distutils.util import strtobool
@@ -227,7 +228,7 @@ def edit_staff(id):
 @login_required
 def edit_student(id):
     student = Student.query.get(id)
-    # form = EditStudentForm() #TODO:instantiate form with student details to get default in select field
+    classroom = Classroom.query.get(student.classroom_id)  # get classroom object to pre-populate classroom selection
     form = EditStudentForm(
         firstname=student.firstname,
         middlename=student.middlename,
@@ -235,11 +236,9 @@ def edit_student(id):
         contact_number=student.contact_number,
         email=student.email,
         address=student.address,
-        classrooms=student
+        classrooms=classroom
     )
-    """
-    form = EditStudentForm(firstname=student.firstname, surname=student.surname...classroom_id=student.classroom_id)
-    """
+
     if form.validate_on_submit():
         classroom = form.classrooms.data
         student.firstname = form.firstname.data
@@ -252,7 +251,7 @@ def edit_student(id):
         db.session.commit()
         flash("Changes have been submitted")
         return redirect(url_for("student", id=id))
-    return render_template("edit_stud.html", title="Edit Student Profile", form=form, student=student)
+    return render_template("edit_student.html", title="Edit Student Profile", form=form, student=student)
 
 
 @app.route("/list_subjects")
@@ -297,30 +296,59 @@ def edit_classroom(id):
     return render_template("edit_classroom.html", title="Edit Classrooms", form=form, classroom=classroom)
 
 
-@app.route("/enter_student_scores", methods=["GET", "POST"])
+@app.route("/select_score_options", methods=["GET", "POST"])
 @login_required
-def enter_student_scores():
+def select_score_options():
     form = EnterStudentScores()
-    students_list = []
+
     if form.validate_on_submit():
         subject = form.subject.data
         classroom = form.classroom.data
-        students_query = Student.query.filter_by(classroom_id=classroom.id)
-        for student in students_query:
-            students_list.append(student)
-        score_type = form.score_type.data
         sessions = form.sessions.data
-        return redirect(url_for("submit_student_scores", subject=subject, classroom=classroom, score_type=score_type,
-                                sessions=sessions, students=students_list))
-    return render_template("student_score.html", title="Student Scores", form=form)
+        term = form.term.data
+        return redirect(
+            url_for("submit_student_scores", subject=subject, classroom=classroom, sessions=sessions, term=term))
+    return render_template("select_score_options.html", title="Select Score Options", form=form)
 
 
 @app.route("/submit_student_scores", methods=["GET", "POST"])
-@login_required
 def submit_student_scores():
-    subject = request.args.get("subject")
-    classroom = request.args.get("classroom")
-    students = request.args.getlist("students")
-    print(f"studs - {students}")
-    return render_template("submit_student_scores.html", title="Submit Student Scores", subject=subject,
-                           classroom=classroom, students=students)
+    subject_name = request.args.get("subject").split(":")[1].strip()
+    subject = Subject.query.filter_by(name=subject_name).first()
+    classroom_sym = request.args.get("classroom").split(":")[1].strip()
+    classroom = Classroom.query.filter_by(classroom_symbol=classroom_sym).first()
+    term = request.args.get("term")
+    students_query = Student.query.filter_by(classroom_id=classroom.id).all()
+    students_list = []
+    session_name = request.args.get("sessions").split(":")[1].strip()
+    sessions = Sessions.query.filter_by(session=session_name).first()
+    for student in students_query:
+        students_list.append(student)
+
+    form = SubmitStudentScores()
+    if form.validate_on_submit():
+        ca_score = int(form.ca_score.data)
+        exam_score = int(form.exam_score.data)
+        result = StudentResults(
+            student_id=form.student_id.data,
+            classroom_id=form.classroom_id.data,
+            subject_id=form.subject_id.data,
+            term=form.term.data,
+            sessions_id=form.sessions_id.data,
+            ca_score=ca_score,
+            exam_score=exam_score
+        )
+        total_score = result.set_total_score(ca_score, exam_score)
+        result.total_score = total_score
+        grade, remark = result.set_grade_and_remark(total_score)
+        result.grade = grade
+        result.grade_remark = remark
+        db.session.add(result)
+        db.session.commit()
+        added_student = Student.query.get(form.student_id.data)
+        flash(f"Result added for {added_student}")
+        return redirect(
+            url_for("submit_student_scores", subject=subject, classroom=classroom, term=term, sessions=sessions))
+
+    return render_template("submit_student_scores.html", form=form, subject=subject, term=term, classroom=classroom,
+                           sessions=sessions, students=students_list)

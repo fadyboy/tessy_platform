@@ -1,11 +1,36 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <div>
-        <p>{{ subject }}</p>
-        <p>{{ classroom }}</p>
+<p>Term: {{ term }}</p>
+<p>Session: {{ sessions.session }}</p>
+<p>Subject: {{ subject.name }}</p>
+<p>Classroom: {{ classroom.classroom_symbol }}</p>
+{% if students|length == 0 %}
+        <b>No students found in {{ classroom.classroom_symbol }} taking {{ subject.name }}</b>
+{% else %}
+    <table>
+        <thead>
+        <th>Student Name</th>
+        <th>CA Score</th>
+        <th>Exam Score</th>
+        <th>Action</th>
+        </thead>
         {% for student in students %}
-        <p>{{ student }}</p>
+        <tr>
+            <td>{{ student }}</td>
+            <form action="" method="post" novalidate>
+                {{ form.csrf_token() }}
+                {{ form.student_id(value=student.id) }}
+                {{ form.classroom_id(value=classroom.id) }}
+                {{ form.subject_id(value=subject.id) }}
+                {{ form.term(value=term) }}
+                {{ form.sessions_id(value=sessions.id) }}
+                <td>{{ form.ca_score(size=5) }}</td>
+                <td>{{ form.exam_score(size=5) }}</td>
+                <td>{{ form.submit() }}</td>
+            </form>
+        </tr>
         {% endfor %}
-    </div>
+    </table>
+{% endif %}
 {% endblock %}

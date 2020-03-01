@@ -112,13 +112,58 @@ class Sessions(db.Model):
         return f"Session: {self.session}"
 
 
-class ScoreType(db.Model):
-    __tablename__ = "score_type"
+class StudentResults(db.Model):
+    __tablename__ = "student_results"
     id = db.Column(db.Integer, primary_key=True)
-    score_type = db.Column(db.String(32), unique=True, index=True)
+    student_id = db.Column(db.Integer, db.ForeignKey("student.id"), nullable=False)
+    classroom_id = db.Column(db.Integer, db.ForeignKey("classroom.id"), nullable=False)
+    subject_id = db.Column(db.Integer, db.ForeignKey("subjects.id"), nullable=False)
+    term = db.Column(db.String(32), nullable=False)
+    sessions_id = db.Column(db.Integer, db.ForeignKey("sessions.id"), nullable=False)
+    ca_score = db.Column(db.Integer, nullable=False)
+    exam_score = db.Column(db.Integer, nullable=False)
+    total_score = db.Column(db.Integer)
+    grade = db.Column(db.String(8))
+    grade_remark = db.Column(db.String(32))
 
-    def __repr__(self):
-        return f"Score: {self.score_type}"
+    def set_total_score(self, ca_score, exam_score):
+        return ca_score + exam_score
+
+    def set_grade_and_remark(self, total_score):
+        if total_score >= 80 <= 90:
+            grade = "A"
+            grade_remark = "EXCELLENT"
+        elif total_score > 90:
+            grade = "A+"
+            grade_remark = "DISTINCTION"
+        elif total_score >= 75 <= 79:
+            grade = "B+"
+            grade_remark = "VERY GOOD"
+        elif total_score >= 70 <= 74:
+            grade = "B"
+            grade_remark = "GOOD"
+        elif total_score >= 65 <= 69:
+            grade = "C+"
+            grade_remark = "CREDIT"
+        elif total_score >= 55 <= 64:
+            grade = "C"
+            grade_remark = "CREDIT"
+        elif total_score >= 50 <= 54:
+            grade = "C-"
+            grade_remark = "CREDIT"
+        elif total_score >= 45 <= 49:
+            grade = "D"
+            grade_remark = "PASS"
+        elif total_score >= 40 <= 44:
+            grade = "E"
+            grade_remark = "PASS"
+        else:
+            grade = "F"
+            grade_remark = "FAIL"
+
+        return grade, grade_remark
+
+    # TODO: Functionality to ensure duplicate scores are not entered
 
 
 @login.user_loader

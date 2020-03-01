@@ -1,9 +1,9 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField, SelectField
+from wtforms import StringField, PasswordField, SubmitField, SelectField, HiddenField
 from wtforms.fields.html5 import DateField
 from wtforms_sqlalchemy.fields import QuerySelectField
 from wtforms.validators import DataRequired, ValidationError, Email, EqualTo, Length
-from studentapp.models import Role, User, Classroom, Subject, Staff, Student, Sessions, ScoreType
+from studentapp.models import Role, User, Classroom, Subject, Staff, Student, Sessions
 
 
 class LoginForm(FlaskForm):
@@ -158,10 +158,6 @@ def sessions_query():
     return Sessions.query
 
 
-def score_type_query():
-    return ScoreType.query
-
-
 class EnterStudentScores(FlaskForm):
     subject = QuerySelectField(query_factory=subjects_query, allow_blank=True, blank_text="Select Subject",
                                get_label="name", get_pk=get_pk,
@@ -169,10 +165,21 @@ class EnterStudentScores(FlaskForm):
     classroom = QuerySelectField(query_factory=classroom_query, allow_blank=True, blank_text="Select Classroom",
                                  get_label="classroom_symbol",
                                  get_pk=get_pk, validators=[DataRequired(message="Please select a classroom")])
-    score_type = QuerySelectField(query_factory=score_type_query, allow_blank=True, blank_text="Select Score type",
-                                  get_label="score_type", get_pk=get_pk,
-                                  validators=[DataRequired(message="Please select score type")])
+    term = SelectField("Select Term", choices=[("", "Select Term"), ("First", "First Term"), ("Second", "Second Term"),
+                                               ("Third", "Third Term")],
+                       validators=[DataRequired(message="Please select a term")])
     sessions = QuerySelectField(query_factory=sessions_query, allow_blank=True, blank_text="Select Session",
-                               get_label="session", get_pk=get_pk,
-                               validators=[DataRequired(message="Please select a session")])
+                                get_label="session", get_pk=get_pk,
+                                validators=[DataRequired(message="Please select a session")])
     submit = SubmitField("Submit")
+
+
+class SubmitStudentScores(FlaskForm):
+    student_id = HiddenField()
+    classroom_id = HiddenField()
+    subject_id = HiddenField()
+    term = HiddenField()
+    sessions_id = HiddenField()
+    ca_score = StringField("CA Score", validators=[DataRequired(message="Please enter a CA score")])
+    exam_score = StringField("Exam Score", validators=[DataRequired(message="Please enter an Exam score")])
+    submit = SubmitField("Submit Score")
