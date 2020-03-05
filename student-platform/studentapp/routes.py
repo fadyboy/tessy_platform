@@ -327,26 +327,35 @@ def submit_student_scores():
 
     form = SubmitStudentScores()
     if form.validate_on_submit():
-        ca_score = int(form.ca_score.data)
-        exam_score = int(form.exam_score.data)
-        result = StudentResults(
-            student_id=form.student_id.data,
-            classroom_id=form.classroom_id.data,
-            subject_id=form.subject_id.data,
-            term=form.term.data,
-            sessions_id=form.sessions_id.data,
-            ca_score=ca_score,
-            exam_score=exam_score
-        )
-        total_score = result.set_total_score(ca_score, exam_score)
-        result.total_score = total_score
-        grade, remark = result.set_grade_and_remark(total_score)
-        result.grade = grade
-        result.grade_remark = remark
-        db.session.add(result)
-        db.session.commit()
-        added_student = Student.query.get(form.student_id.data)
-        flash(f"Result added for {added_student}")
+        # check if record exists already
+        record_exists = StudentResults.query.filter_by(student_id=form.student_id.data,
+                                                       classroom_id=form.classroom_id.data,
+                                                       subject_id=form.subject_id.data,
+                                                       term=form.term.data,
+                                                       sessions_id=form.sessions_id.data).first()
+        if record_exists is not None:
+            flash("Record already exists for student in subject for term and session")
+        else:
+            ca_score = int(form.ca_score.data)
+            exam_score = int(form.exam_score.data)
+            result = StudentResults(
+                student_id=form.student_id.data,
+                classroom_id=form.classroom_id.data,
+                subject_id=form.subject_id.data,
+                term=form.term.data,
+                sessions_id=form.sessions_id.data,
+                ca_score=ca_score,
+                exam_score=exam_score
+            )
+            total_score = result.set_total_score(ca_score, exam_score)
+            result.total_score = total_score
+            grade, remark = result.set_grade_and_remark(total_score)
+            result.grade = grade
+            result.grade_remark = remark
+            db.session.add(result)
+            db.session.commit()
+            added_student = Student.query.get(form.student_id.data)
+            flash(f"Result added for {added_student}")
         return redirect(
             url_for("submit_student_scores", subject=subject, classroom=classroom, term=term, sessions=sessions))
 
