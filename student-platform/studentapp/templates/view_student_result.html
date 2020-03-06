@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>{{ student.firstname }} {{ student.surname }} Results Page</h1>
+    <table>
+        <thead>
+            <th>Subject</th>
+            <th>CA Score(50%)</th>
+            <th>Exam Score(50%)</th>
+            <th>Total</th>
+            <th>Grade</th>
+            <th>Remarks</th>
+        </thead>
+        {% for record in records %}
+        <tr>
+            <td>{{ record.subject_name }}</td>
+            <td>{{ record.ca_score }}</td>
+            <td>{{ record.exam_score }}</td>
+            <td>{{ record.total }}</td>
+            <td>{{ record.grade }}</td>
+            <td>{{ record.remark }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

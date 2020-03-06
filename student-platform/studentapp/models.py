@@ -163,7 +163,9 @@ class StudentResults(db.Model):
 
         return grade, grade_remark
 
-    # TODO: Functionality to ensure duplicate scores are not entered
+    # TODO: Functionality to calculate average score in subject
+    # TODO: Functionality to calculate student score rank in subject
+    # TODO: Functionality to get the lowest and highest score in subject (nice to have)
 
 
 @login.user_loader

@@ -361,3 +361,25 @@ def submit_student_scores():
 
     return render_template("submit_student_scores.html", form=form, subject=subject, term=term, classroom=classroom,
                            sessions=sessions, students=students_list)
+
+
+@app.route("/view_student_result/<id>")
+@login_required
+def view_student_result(id):
+    student_records = StudentResults.query.filter_by(student_id=id, term="First", sessions_id=1).order_by(
+        StudentResults.subject_id).all()
+    student = Student.query.get(id)
+
+    records = []
+    for record in student_records:
+        record_details = {}
+        subject = Subject.query.get(record.subject_id)
+        record_details["subject_name"] = subject.name
+        record_details["ca_score"] = record.ca_score
+        record_details["exam_score"] = record.exam_score
+        record_details["total"] = record.total_score
+        record_details["grade"] = record.grade
+        record_details["remark"] = record.grade_remark
+        records.append(record_details)
+
+    return render_template("view_student_result.html", title="View Student Result", records=records, student=student)
