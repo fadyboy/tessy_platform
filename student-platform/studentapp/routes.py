@@ -363,12 +363,14 @@ def submit_student_scores():
                            sessions=sessions, students=students_list)
 
 
-@app.route("/view_student_result/<id>")
+@app.route("/view_student_result")
 @login_required
-def view_student_result(id):
-    student_records = StudentResults.query.filter_by(student_id=id, term="First", sessions_id=1).order_by(
+def view_student_result():
+    term = request.args.get("term")
+    student_id = request.args.get("id")
+    student_records = StudentResults.query.filter_by(student_id=student_id, term=term, sessions_id=1).order_by(
         StudentResults.subject_id).all()
-    student = Student.query.get(id)
+    student = Student.query.get(student_id)
 
     records = []
     for record in student_records:
