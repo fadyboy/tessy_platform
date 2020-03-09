@@ -25,8 +25,17 @@
                 {{ form.subject_id(value=subject.id) }}
                 {{ form.term(value=term) }}
                 {{ form.sessions_id(value=sessions.id) }}
-                <td>{{ form.ca_score(size=5) }}</td>
-                <td>{{ form.exam_score(size=5) }}</td>
+                <td>
+                    {{ form.ca_score(size=5) }}
+                    {% for error in form.ca_score.errors %}
+                    <span style="color:red;">{{ error }}</span>
+                    {% endfor %}
+                </td>
+                <td>
+                    {{ form.exam_score(size=5) }}
+                    {% for error in form.exam_score.errors %}
+                    <span style="color:red;">{{ error }}</span>
+                </td>
                 <td>{{ form.submit() }}</td>
             </form>
         </tr>
