@@ -35,6 +35,7 @@
                     {{ form.exam_score(size=5) }}
                     {% for error in form.exam_score.errors %}
                     <span style="color:red;">{{ error }}</span>
+                    {% endfor %}
                 </td>
                 <td>{{ form.submit() }}</td>
             </form>
