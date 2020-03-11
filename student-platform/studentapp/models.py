@@ -107,9 +107,18 @@ class Sessions(db.Model):
     __tablename__ = "sessions"
     id = db.Column(db.Integer, primary_key=True)
     session = db.Column(db.String(16), unique=True, index=True)
+    current_session = db.Column(db.Boolean, index=True)
 
     def __repr__(self):
         return f"Session: {self.session}"
+
+    def set_as_current_session(self, session_id):
+        # first check if a session is already set
+        old_session = Sessions.query.filter_by(current_session="t").first()
+        if old_session:
+            old_session.current_session = False
+        new_session = Sessions.query.get(session_id)
+        new_session.current_session = True
 
 
 class StudentResults(db.Model):
