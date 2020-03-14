@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Add School Session</h1>
+<a href="{{ url_for('set_active_session') }}">Set active session</a>
+<form action="" method="post" novalidate>
+    {{ form.csrf_token() }}
+    <p>
+        {{ form.session.label }}<br/>
+        {{ form.session(size=32) }}
+        {% for error in form.session.errors %}
+        <span style="color:red;">{{ error }}</span>
+        {% endfor %}
+    </p>
+    <p>{{ form.submit() }}</p>
+</form>
+
+{% endblock %}

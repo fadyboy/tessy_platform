@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Set Active Session</h1>
+<form action="" method="post">
+    {{ form.csrf_token() }}
+    <p>
+        {{ form.session() }}
+        {% for error in form.session.errors %}
+        <span style="color: red;">{{ error }}</span>
+        {% endfor %}
+    </p>
+    <p>{{ form.submit() }}</p>
+</form>
+{% endblock %}

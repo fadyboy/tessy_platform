@@ -1,4 +1,5 @@
 /venv
+/platform
 /__pycache__
 /studentapp/__pycache__/
 /migrations/__pycache__

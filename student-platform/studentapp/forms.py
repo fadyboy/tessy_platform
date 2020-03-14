@@ -158,7 +158,7 @@ def sessions_query():
     return Sessions.query
 
 
-class EnterStudentScores(FlaskForm):
+class EnterStudentScoresForm(FlaskForm):
     subject = QuerySelectField(query_factory=subjects_query, allow_blank=True, blank_text="Select Subject",
                                get_label="name", get_pk=get_pk,
                                validators=[DataRequired(message="Please select a subject")])
@@ -174,7 +174,7 @@ class EnterStudentScores(FlaskForm):
     submit = SubmitField("Submit")
 
 
-class SubmitStudentScores(FlaskForm):
+class SubmitStudentScoresForm(FlaskForm):
     student_id = HiddenField()
     classroom_id = HiddenField()
     subject_id = HiddenField()
@@ -183,3 +183,20 @@ class SubmitStudentScores(FlaskForm):
     ca_score = StringField("CA Score", validators=[DataRequired(message="Please enter a CA score")])
     exam_score = StringField("Exam Score", validators=[DataRequired(message="Please enter an Exam score")])
     submit = SubmitField("Submit Score")
+
+
+class AddSessionForm(FlaskForm):
+    session = StringField("Session", validators=[DataRequired(message="Please enter a valid session")])
+    submit = SubmitField("Submit")
+
+    def validate_session(self, session):
+        session_exist = Sessions.query.filter_by(session=session.data).first()
+        if session_exist:
+            raise ValidationError("Session already exists")
+
+
+class SetActiveSessionForm(FlaskForm):
+    session = QuerySelectField(query_factory=sessions_query, allow_blank=True, blank_text="Select Session",
+                               get_label="session", get_pk=get_pk,
+                               validators=[DataRequired(message="Please select a session")])
+    submit = SubmitField("Set active Session")

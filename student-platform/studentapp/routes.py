@@ -2,8 +2,8 @@ from flask import render_template, flash, redirect, url_for, request
 from werkzeug.urls import url_parse
 from studentapp import app, db
 from studentapp.forms import LoginForm, AddUserForm, AddStaffForm, AddStudentForm, AddClassroomForm, AddSubjectForm, \
-    EditUserForm, EditStaffForm, EditStudentForm, EditSubjectForm, EditClassroomForm, EnterStudentScores, \
-    SubmitStudentScores
+    EditUserForm, EditStaffForm, EditStudentForm, EditSubjectForm, EditClassroomForm, EnterStudentScoresForm, \
+    SubmitStudentScoresForm, AddSessionForm, SetActiveSessionForm
 from studentapp.models import User, Staff, Student, Classroom, Subject, Sessions, StudentResults
 from flask_login import current_user, login_user, logout_user, login_required
 from studentapp.utils import create_pagination_for_page_view
@@ -299,7 +299,7 @@ def edit_classroom(id):
 @app.route("/select_score_options", methods=["GET", "POST"])
 @login_required
 def select_score_options():
-    form = EnterStudentScores()
+    form = EnterStudentScoresForm()
 
     if form.validate_on_submit():
         subject = form.subject.data
@@ -325,7 +325,7 @@ def submit_student_scores():
     for student in students_query:
         students_list.append(student)
 
-    form = SubmitStudentScores()
+    form = SubmitStudentScoresForm()
     if form.validate_on_submit():
         # check if record exists already
         record_exists = StudentResults.query.filter_by(student_id=form.student_id.data,
@@ -385,3 +385,34 @@ def view_student_result():
         records.append(record_details)
 
     return render_template("view_student_result.html", title="View Student Result", records=records, student=student)
+
+
+@app.route("/add_session", methods=["GET", "POST"])
+@login_required
+def add_session():
+    form = AddSessionForm()
+    if form.validate_on_submit():
+        school_session = Sessions(
+            session=form.session.data,
+            current_session=False
+        )
+        db.session.add(school_session)
+        db.session.commit()
+        flash(f"{school_session.session} added")
+        return redirect(url_for("add_session"))
+    return render_template("add_session.html", title="Add School Session", form=form)
+
+
+@app.route("/set_active_session", methods=["GET", "POST"])
+@login_required
+def set_active_session():
+    form = SetActiveSessionForm()
+    if form.validate_on_submit():
+        selected_session = form.session.data
+        selected_session.set_as_current_session(selected_session.id)
+        selected_session.set_as_current_session(selected_session.id)
+        db.session.add(selected_session)
+        db.session.commit()
+        flash(f"{selected_session.session} set as current session")
+
+    return render_template("set_active_session.html", title="Set Active Session", form=form)
