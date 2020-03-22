@@ -368,7 +368,8 @@ def submit_student_scores():
 def view_student_result():
     term = request.args.get("term")
     student_id = request.args.get("id")
-    student_records = StudentResults.query.filter_by(student_id=student_id, term=term, sessions_id=1).order_by(
+    active_session = Sessions.query.filter_by(current_session=True).first()
+    student_records = StudentResults.query.filter_by(student_id=student_id, term=term, sessions_id=active_session.id).order_by(
         StudentResults.subject_id).all()
     student = Student.query.get(student_id)
 
@@ -384,7 +385,7 @@ def view_student_result():
         record_details["remark"] = record.grade_remark
         records.append(record_details)
 
-    return render_template("view_student_result.html", title="View Student Result", records=records, student=student)
+    return render_template("view_student_result.html", title="View Student Result", records=records, student=student, term=term, active_session=active_session)
 
 
 @app.route("/add_session", methods=["GET", "POST"])
