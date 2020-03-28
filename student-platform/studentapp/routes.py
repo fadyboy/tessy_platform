@@ -1,13 +1,20 @@
 from flask import render_template, flash, redirect, url_for, request
 from werkzeug.urls import url_parse
 from studentapp import app, db
-from studentapp.forms import LoginForm, AddUserForm, AddStaffForm, AddStudentForm, AddClassroomForm, AddSubjectForm, \
-    EditUserForm, EditStaffForm, EditStudentForm, EditSubjectForm, EditClassroomForm, EnterStudentScoresForm, \
-    SubmitStudentScoresForm, AddSessionForm, SetActiveSessionForm
-from studentapp.models import User, Staff, Student, Classroom, Subject, Sessions, StudentResults
+from studentapp.forms import (LoginForm, AddUserForm, AddStaffForm,
+                              AddStudentForm, AddClassroomForm, AddSubjectForm,
+                              EditUserForm, EditStaffForm, EditStudentForm,
+                              EditSubjectForm, EditClassroomForm,
+                              EnterStudentScoresForm, SubmitStudentScoresForm,
+                              AddSessionForm, SetActiveSessionForm,
+                              ResetPasswordRequestForm, ResetPasswordForm)
+from studentapp.models import (
+    User, Staff, Student, Classroom, Subject, Sessions, StudentResults
+    )
 from flask_login import current_user, login_user, logout_user, login_required
 from studentapp.utils import create_pagination_for_page_view
 from distutils.util import strtobool
+from studentapp.email import send_password_reset_email
 
 
 @app.route("/")
@@ -81,7 +88,8 @@ def add_staff():
         )
         db.session.add(staff_user)
         db.session.commit()
-        flash(f"{staff_user.firstname} {staff_user.surname} added as a member of staff")
+        flash(f"{staff_user.firstname} {staff_user.surname} added as a member \
+            of staff")
         return redirect(url_for("add_staff"))
     return render_template("add_staff.html", title="Add Staff", form=form)
 
@@ -126,7 +134,8 @@ def add_classroom():
         db.session.commit()
         flash(f"{classroom.classroom_symbol} classroom added")
         return redirect(url_for("add_classroom"))
-    return render_template("add_classroom.html", title="Add Classroom", form=form)
+    return render_template("add_classroom.html", title="Add Classroom",
+                           form=form)
 
 
 @app.route("/add_subject", methods=["GET", "POST"])
@@ -148,8 +157,11 @@ def add_subject():
 @app.route("/list_users")
 @login_required
 def list_users():
-    users, next_url, prev_url = create_pagination_for_page_view(User, "list_users")
-    return render_template("list_users.html", title="All Users", users=users.items, next_url=next_url,
+    users, next_url, prev_url = create_pagination_for_page_view(
+                                                                User,
+                                                                "list_users")
+    return render_template("list_users.html", title="All Users",
+                           users=users.items, next_url=next_url,
                            prev_url=prev_url)
 
 
@@ -173,22 +185,27 @@ def edit_user(id):
         flash("Changes have been submitted")
         return redirect(url_for("user", id=id))
 
-    return render_template("edit_user.html", title="Edit User Profile", form=form, user=user)
+    return render_template("edit_user.html", title="Edit User Profile",
+                           form=form, user=user)
 
 
 @app.route("/list_staff")
 @login_required
 def list_staff():
-    staff, next_url, prev_url = create_pagination_for_page_view(Staff, "list_staff")
-    return render_template("list_staff.html", title="All Staff", staff=staff.items, next_url=next_url,
+    staff, next_url, prev_url = create_pagination_for_page_view(Staff,
+                                                                "list_staff")
+    return render_template("list_staff.html", title="All Staff",
+                           staff=staff.items, next_url=next_url,
                            prev_url=prev_url)
 
 
 @app.route("/list_all_students")
 @login_required
 def list_students():
-    students, next_url, prev_url = create_pagination_for_page_view(Student, "list_students")
-    return render_template("list_students.html", title="All Students", students=students.items, next_url=next_url,
+    students, next_url, prev_url = \
+        create_pagination_for_page_view(Student, "list_students")
+    return render_template("list_students.html", title="All Students",
+                           students=students.items, next_url=next_url,
                            prev_url=prev_url)
 
 
@@ -203,7 +220,8 @@ def staff(id):
 @login_required
 def student(id):
     student = Student.query.get_or_404(id, description="Student not found")
-    return render_template("student.html", title="Student Profile", student=student)
+    return render_template("student.html", title="Student Profile",
+                           student=student)
 
 
 @app.route("/edit_staff/<id>", methods=["GET", "POST"])
@@ -221,14 +239,16 @@ def edit_staff(id):
         db.session.commit()
         flash("Changes have been submitted")
         return redirect(url_for("staff", id=id))
-    return render_template("edit_staff.html", title="Edit Staff Profile", form=form, staff=staff)
+    return render_template("edit_staff.html", title="Edit Staff Profile",
+                           form=form, staff=staff)
 
 
 @app.route("/edit_student/<id>", methods=["GET", "POST"])
 @login_required
 def edit_student(id):
     student = Student.query.get(id)
-    classroom = Classroom.query.get(student.classroom_id)  # get classroom object to pre-populate classroom selection
+    # get classroom object to pre-populate classroom selection
+    classroom = Classroom.query.get(student.classroom_id)
     form = EditStudentForm(
         firstname=student.firstname,
         middlename=student.middlename,
@@ -251,14 +271,16 @@ def edit_student(id):
         db.session.commit()
         flash("Changes have been submitted")
         return redirect(url_for("student", id=id))
-    return render_template("edit_student.html", title="Edit Student Profile", form=form, student=student)
+    return render_template("edit_student.html", title="Edit Student Profile",
+                           form=form, student=student)
 
 
 @app.route("/list_subjects")
 @login_required
 def list_subjects():
     subjects = Subject.query.all()
-    return render_template("list_subjects.html", title="List Subjects", subjects=subjects)
+    return render_template("list_subjects.html", title="List Subjects",
+                           subjects=subjects)
 
 
 @app.route("/edit_subject/<id>", methods=["GET", "POST"])
@@ -272,14 +294,16 @@ def edit_subject(id):
         db.session.commit()
         flash("Changes have been submitted")
         return redirect(url_for("list_subjects"))
-    return render_template("edit_subject.html", title="Edit Subject", subject=subject, form=form)
+    return render_template("edit_subject.html", title="Edit Subject",
+                           subject=subject, form=form)
 
 
 @app.route("/list_classrooms")
 @login_required
 def list_classrooms():
     classrooms = Classroom.query.all()
-    return render_template("list_classrooms.html", title="List Classrooms", classrooms=classrooms)
+    return render_template("list_classrooms.html", title="List Classrooms",
+                           classrooms=classrooms)
 
 
 @app.route("/edit_classroom/<id>", methods=["GET", "POST"])
@@ -293,7 +317,8 @@ def edit_classroom(id):
         db.session.commit()
         flash("Changes have been submitted")
         return redirect(url_for("list_classrooms"))
-    return render_template("edit_classroom.html", title="Edit Classrooms", form=form, classroom=classroom)
+    return render_template("edit_classroom.html", title="Edit Classrooms",
+                           form=form, classroom=classroom)
 
 
 @app.route("/select_score_options", methods=["GET", "POST"])
@@ -307,8 +332,10 @@ def select_score_options():
         sessions = form.sessions.data
         term = form.term.data
         return redirect(
-            url_for("submit_student_scores", subject=subject, classroom=classroom, sessions=sessions, term=term))
-    return render_template("select_score_options.html", title="Select Score Options", form=form)
+            url_for("submit_student_scores", subject=subject,
+                    classroom=classroom, sessions=sessions, term=term))
+    return render_template("select_score_options.html",
+                           title="Select Score Options", form=form)
 
 
 @app.route("/submit_student_scores", methods=["GET", "POST"])
@@ -316,7 +343,9 @@ def submit_student_scores():
     subject_name = request.args.get("subject").split(":")[1].strip()
     subject = Subject.query.filter_by(name=subject_name).first()
     classroom_sym = request.args.get("classroom").split(":")[1].strip()
-    classroom = Classroom.query.filter_by(classroom_symbol=classroom_sym).first()
+    classroom = Classroom.query.filter_by(
+                                          classroom_symbol=classroom_sym
+                                          ).first()
     term = request.args.get("term")
     students_query = Student.query.filter_by(classroom_id=classroom.id).all()
     students_list = []
@@ -328,13 +357,16 @@ def submit_student_scores():
     form = SubmitStudentScoresForm()
     if form.validate_on_submit():
         # check if record exists already
-        record_exists = StudentResults.query.filter_by(student_id=form.student_id.data,
-                                                       classroom_id=form.classroom_id.data,
-                                                       subject_id=form.subject_id.data,
-                                                       term=form.term.data,
-                                                       sessions_id=form.sessions_id.data).first()
+        record_exists = \
+            StudentResults.query.filter_by(student_id=form.student_id.data,
+                                           classroom_id=form.classroom_id.data,
+                                           subject_id=form.subject_id.data,
+                                           term=form.term.data,
+                                           sessions_id=form.sessions_id.data
+                                           ).first()
         if record_exists is not None:
-            flash("Record already exists for student in subject for term and session")
+            flash("Record already exists for student in subject for \
+                  term and session")
         else:
             ca_score = int(form.ca_score.data)
             exam_score = int(form.exam_score.data)
@@ -357,9 +389,11 @@ def submit_student_scores():
             added_student = Student.query.get(form.student_id.data)
             flash(f"Result added for {added_student}")
         return redirect(
-            url_for("submit_student_scores", subject=subject, classroom=classroom, term=term, sessions=sessions))
+            url_for("submit_student_scores", subject=subject,
+                    classroom=classroom, term=term, sessions=sessions))
 
-    return render_template("submit_student_scores.html", form=form, subject=subject, term=term, classroom=classroom,
+    return render_template("submit_student_scores.html", form=form,
+                           subject=subject, term=term, classroom=classroom,
                            sessions=sessions, students=students_list)
 
 
@@ -369,8 +403,13 @@ def view_student_result():
     term = request.args.get("term")
     student_id = request.args.get("id")
     active_session = Sessions.query.filter_by(current_session=True).first()
-    student_records = StudentResults.query.filter_by(student_id=student_id, term=term, sessions_id=active_session.id).order_by(
-        StudentResults.subject_id).all()
+    student_records = \
+        StudentResults.query.filter_by(student_id=student_id,
+                                       term=term,
+                                       sessions_id=active_session.id
+                                       ).order_by(
+                                                  StudentResults.subject_id
+                                                  ).all()
     student = Student.query.get(student_id)
 
     records = []
@@ -385,7 +424,12 @@ def view_student_result():
         record_details["remark"] = record.grade_remark
         records.append(record_details)
 
-    return render_template("view_student_result.html", title="View Student Result", records=records, student=student, term=term, active_session=active_session)
+    return render_template("view_student_result.html",
+                           title="View Student Result",
+                           records=records,
+                           student=student,
+                           term=term,
+                           active_session=active_session)
 
 
 @app.route("/add_session", methods=["GET", "POST"])
@@ -401,7 +445,8 @@ def add_session():
         db.session.commit()
         flash(f"{school_session.session} added")
         return redirect(url_for("add_session"))
-    return render_template("add_session.html", title="Add School Session", form=form)
+    return render_template("add_session.html", title="Add School Session",
+                           form=form)
 
 
 @app.route("/set_active_session", methods=["GET", "POST"])
@@ -416,4 +461,37 @@ def set_active_session():
         db.session.commit()
         flash(f"{selected_session.session} set as current session")
 
-    return render_template("set_active_session.html", title="Set Active Session", form=form)
+    return render_template("set_active_session.html",
+                           title="Set Active Session", form=form)
+
+
+@app.route("/reset_password_request", methods=["GET", "POST"])
+def reset_password_request():
+    if current_user.is_authenticated:
+        return redirect(url_for("index"))
+    form = ResetPasswordRequestForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user:
+            send_password_reset_email(user)
+        flash("Check your email for instructions to reset your password")
+        return redirect(url_for("login"))
+    return render_template("reset_password_request.html",
+                           title="Reset Password Request", form=form)
+
+
+@app.route("/reset_password/<token>", methods=["GET", "POST"])
+def reset_password(token):
+    if current_user.is_authenticated:
+        return redirect(url_for("index"))
+    user = User.verify_reset_password_token(token)
+    if not user:
+        return redirect(url_for("index"))
+    form = ResetPasswordForm()
+    if form.validate_on_submit():
+        user.set_password(form.password.data)
+        db.session.commit()
+        flash("Your password has be reset")
+        return redirect(url_for("login"))
+    return render_template("reset_password.html", form=form,
+                           title="Reset Password")

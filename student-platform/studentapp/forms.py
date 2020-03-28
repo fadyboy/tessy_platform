@@ -270,3 +270,34 @@ class SetActiveSessionForm(FlaskForm):
                                validators=[DataRequired(message="Please select \
                                    a session")])
     submit = SubmitField("Set active Session")
+
+
+class ResetPasswordRequestForm(FlaskForm):
+    email = StringField("Email",
+                        validators=[DataRequired(
+                            message="Please enter email"),
+                            Email(message="Please enter valid email")
+                            ]
+                        )
+    submit = SubmitField("Request Password Reset")
+
+
+class ResetPasswordForm(FlaskForm):
+    password = PasswordField(
+                             "Password",
+                             validators=[DataRequired(
+                                 message="Password must contain minimum 6 \
+                                     characters"
+                             ),
+                                        Length(min=6)
+                             ]
+                             )
+    password2 = PasswordField(
+                              "Repeat Password",
+                              validators=[DataRequired(),
+                                          EqualTo(password,
+                                                  message="Passwords must \
+                                                      match"
+                                                  )
+                                          ])
+    submit = SubmitField("Reset Password")

@@ -1,14 +1,18 @@
-from studentapp import db, login
+import jwt
+from studentapp import db, login, app
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from studentapp.utils import avatar
+from time import time
 
 
 class User(db.Model, UserMixin):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(64, collation="NOCASE"), index=True, unique=True)
-    email = db.Column(db.String(128, collation="NOCASE"), index=True, unique=True)
+    username = db.Column(db.String(64, collation="NOCASE"), index=True,
+                         unique=True)
+    email = db.Column(db.String(128, collation="NOCASE"), index=True,
+                      unique=True)
     password_hash = db.Column(db.String(128))
     is_active = db.Column(db.Boolean, nullable=False, server_default="t")
     role = db.relationship("Role", secondary="user_roles", uselist=False)
@@ -24,6 +28,28 @@ class User(db.Model, UserMixin):
 
     def get_user_avatar(self, size):
         return avatar(self.email, size)
+
+    def get_reset_password_token(self, expires_in=3600):
+        return jwt.encode(
+            {
+                "reset_password": self.id,
+                "exp": time() + expires_in
+            },
+            app.config["SECRET_KEY"],
+            algorithm="HS256"
+        ).decode("UTF-8")
+
+    @staticmethod
+    def verify_reset_password_token(token):
+        try:
+            id = jwt.decode(
+                token,
+                app.config["SECRET_KEY"],
+                algorithms=["HS256"]
+            )["reset_password"]
+        except Exception:
+            return
+        return User.query.get(id)
 
 
 class Person(db.Model):
@@ -59,7 +85,8 @@ class Student(Person):
     __tablename__ = "student"
     id = db.Column(db.Integer, primary_key=True)
     parent_guardian_name = db.Column(db.String(128))
-    classroom_id = db.Column(db.Integer, db.ForeignKey("classroom.id"), nullable=False)
+    classroom_id = db.Column(db.Integer, db.ForeignKey("classroom.id"),
+                             nullable=False)
 
     def display_classroom_symbol(self):
         classroom = Classroom.query.get(self.classroom_id)
@@ -89,8 +116,10 @@ class Role(db.Model):
 class UserRoles(db.Model):
     __tablename__ = "user_roles"
     id = db.Column(db.Integer(), primary_key=True)
-    user_id = db.Column(db.Integer(), db.ForeignKey("users.id", ondelete="CASCADE"))
-    role_id = db.Column(db.Integer(), db.ForeignKey("roles.id", ondelete="CASCADE"))
+    user_id = db.Column(db.Integer(), db.ForeignKey("users.id",
+                                                    ondelete="CASCADE"))
+    role_id = db.Column(db.Integer(), db.ForeignKey("roles.id",
+                                                    ondelete="CASCADE"))
 
 
 class Subject(db.Model):
@@ -107,7 +136,8 @@ class Sessions(db.Model):
     __tablename__ = "sessions"
     id = db.Column(db.Integer, primary_key=True)
     session = db.Column(db.String(16), unique=True, index=True, nullable=False)
-    current_session = db.Column(db.Boolean, nullable=False, server_default='false')
+    current_session = db.Column(db.Boolean, nullable=False,
+                                server_default='false')
 
     def __repr__(self):
         return f"Session: {self.session}"
@@ -126,11 +156,15 @@ class Sessions(db.Model):
 class StudentResults(db.Model):
     __tablename__ = "student_results"
     id = db.Column(db.Integer, primary_key=True)
-    student_id = db.Column(db.Integer, db.ForeignKey("student.id"), nullable=False)
-    classroom_id = db.Column(db.Integer, db.ForeignKey("classroom.id"), nullable=False)
-    subject_id = db.Column(db.Integer, db.ForeignKey("subjects.id"), nullable=False)
+    student_id = db.Column(db.Integer, db.ForeignKey("student.id"),
+                           nullable=False)
+    classroom_id = db.Column(db.Integer, db.ForeignKey("classroom.id"),
+                             nullable=False)
+    subject_id = db.Column(db.Integer, db.ForeignKey("subjects.id"),
+                           nullable=False)
     term = db.Column(db.String(32), nullable=False)
-    sessions_id = db.Column(db.Integer, db.ForeignKey("sessions.id"), nullable=False)
+    sessions_id = db.Column(db.Integer, db.ForeignKey("sessions.id"),
+                            nullable=False)
     ca_score = db.Column(db.Integer, nullable=False)
     exam_score = db.Column(db.Integer, nullable=False)
     total_score = db.Column(db.Integer)
@@ -176,7 +210,7 @@ class StudentResults(db.Model):
 
     # TODO: Functionality to calculate average score in subject
     # TODO: Functionality to calculate student score rank in subject
-    # TODO: Functionality to get the lowest and highest score in subject (nice to have)
+    # TODO: Functionality to get the lowest and highest score in subject
 
 
 @login.user_loader
