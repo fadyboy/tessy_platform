@@ -7,14 +7,28 @@
         {{ form.hidden_tag() }}
         <p>
             {{ form.subject() }}
+            {% for error in form.subject.errors %}
+            <span style="color: red;">{{ error }}</span>
+            {% endfor %}
         </p>
         <p>
             {{ form.classroom() }}
+            {% for error in form.classroom.errors %}
+            <span style="color: red;">{{ error }}</span>
+            {% endfor %}
         </p>
         <p>
             {{ form.term() }}
+            {% for error in form.term.errors %}
+            <span style="color: red;">{{ error }}</span>
+            {% endfor %}
         </p>
-        <p>{{ form.sessions() }}</p>
+        <p>
+            {{ form.sessions() }}
+            {% for error in form.sessions.errors %}
+            <span style="color: red;">{{ error }}</span>
+            {% endfor %}
+        </p>
         <p>{{ form.submit() }}</p>
     </form>
 </div>
