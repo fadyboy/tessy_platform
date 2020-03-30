@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>{{ user.username }} Profile</h1>
+    <h2 class="title is-2">{{ user.username }} Profile</h2>
     <div>
         <img src="{{ user.get_user_avatar(size=80) }}" />
         <hr />
