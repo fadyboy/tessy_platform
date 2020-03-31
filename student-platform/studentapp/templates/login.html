@@ -12,14 +12,14 @@
                 <form role="form" action="" method="post" novalidate>
                     {{ form.hidden_tag() }}
                     <p class="subtitle is-6">
-                        {{ form.username.label }}<br />
+                        {{ form.username.label(class="label") }}
                         {{ form.username(class="input") }}
                         {% for error in form.username.errors %}
                             <span style="color:red;">{{ error }}</span>
                         {% endfor %}
                     </p>
                     <p class="subtitle is-6">
-                        {{ form.password.label }}<br />
+                        {{ form.password.label(class="label") }}
                         {{ form.password(class="input") }}
                         {% for error in form.password.errors %}
                             <span style="color:red;">{{ error }}</span>

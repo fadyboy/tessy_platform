@@ -12,8 +12,8 @@
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
 </head>
 <body>
-    <div class="container">
-        <nav class="bd-navbar navbar has-shadow is-spaced">
+    <nav class="bd-navbar navbar has-shadow is-spaced">
+        <div class="container">
             <div class="navbar-brand">
                 <a href="{{ url_for('index') }}">Tessy Int. School</a>
             </div>
@@ -39,20 +39,21 @@
                 <a href="{{ url_for('logout') }}" class="navbar-item">Logout</a>
                 {% endif %}
             </div>
-        </nav>
-       <section class="section">
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <ul>
-                {% for message in messages %}
-                    <li class="tag is-info is-light subtitle is-6">{{ message }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-        {% endwith %}
-        {% block content %}{% endblock %}
-       </section>
+        </div>
+    </nav>
+    <div class="container">
+        <section class="section">
+            {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <ul>
+                    {% for message in messages %}
+                        <li class="tag is-info is-light subtitle is-6">{{ message }}</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            {% endwith %}
+            {% block content %}{% endblock %}
+            </section>
     </div>
-    
 </body>
 </html>
