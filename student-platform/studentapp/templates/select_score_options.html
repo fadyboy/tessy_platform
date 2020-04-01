@@ -1,36 +1,42 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Select options for student scores</h1>
-<div>
-    <form action="" method="post" novalidate>
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.subject() }}
-            {% for error in form.subject.errors %}
-            <span style="color: red;">{{ error }}</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.classroom() }}
-            {% for error in form.classroom.errors %}
-            <span style="color: red;">{{ error }}</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.term() }}
-            {% for error in form.term.errors %}
-            <span style="color: red;">{{ error }}</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.sessions() }}
-            {% for error in form.sessions.errors %}
-            <span style="color: red;">{{ error }}</span>
-            {% endfor %}
-        </p>
-        <p>{{ form.submit() }}</p>
-    </form>
-</div>
-
+    <div class="title-wrapper has-text-centered">
+        <h2 class="title is-2 is-spaced">Select options for student scores</h2>
+    </div>
+    <div class="subtitle"></div>
+    <div class="content-wrapper">
+        <div class="columns">
+            <div class="column is-4 is-offset-4">
+                <form action="" method="post" novalidate>
+                    {{ form.hidden_tag() }}
+                    <p class="subtitle is-6">
+                        {{ form.subject(class="select") }}
+                        {% for error in form.subject.errors %}
+                        <br /><span style="color: red;">{{ error }}</span>
+                        {% endfor %}
+                    </p>
+                    <p class="subtitle is-6">
+                        {{ form.classroom(class="select") }}
+                        {% for error in form.classroom.errors %}
+                        <br /><span style="color: red;">{{ error }}</span>
+                        {% endfor %}
+                    </p>
+                    <p class="subtitle is-6">
+                        {{ form.term(class="select") }}
+                        {% for error in form.term.errors %}
+                        <br /><span style="color: red;">{{ error }}</span>
+                        {% endfor %}
+                    </p>
+                    <p class="subtitle is-6">
+                        {{ form.sessions(class="select") }}
+                        {% for error in form.sessions.errors %}
+                        <br /><span style="color: red;">{{ error }}</span>
+                        {% endfor %}
+                    </p>
+                    <p>{{ form.submit(class="button is-info") }}</p>
+                </form>
+            </div>
+        </div>
+    </div>
 {% endblock %}

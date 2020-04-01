@@ -1,26 +1,34 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Add Classroom</h1>
-    <h3><a href="{{ url_for('list_classrooms') }}">View list of Classrooms</a></h3>
-    <form action="" method="post" novalidate>
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.classroom_name.label }}<br/>
-            {{ form.classroom_name(size=32) }}
-            {% for error in form.classroom_name.errors %}
-                <span style="color:red;">{{ error }}</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.classroom_symbol.label }}
-            {{ form.classroom_symbol(size=16) }}
-            {% for error in form.classroom_symbol.errors %}
-                <span style="color:red;">{{ error }}</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.submit() }}
-        </p>
-    </form>
+    <div class="title-wrapper has-text-centered">
+        <h2 class="title is-2 is-spaced">Add Classroom</h2>
+    </div>
+    <h3 class="subtitle"><a href="{{ url_for('list_classrooms') }}">View list of Classrooms</a></h3>
+    <div class="content-wrapper">
+        <div class="columns">
+            <div class="column is-4 is-offset-4">
+                <form role="form" action="" method="post" novalidate>
+                    {{ form.hidden_tag() }}
+                    <p class="subtitle is-6">
+                        {{ form.classroom_name.label(class="label") }}
+                        {{ form.classroom_name(class="input") }}
+                        {% for error in form.classroom_name.errors %}
+                            <span style="color:red;">{{ error }}</span>
+                        {% endfor %}
+                    </p>
+                    <p class="subtitle is-6">
+                        {{ form.classroom_symbol.label(class="label") }}
+                        {{ form.classroom_symbol(class="input") }}
+                        {% for error in form.classroom_symbol.errors %}
+                            <span style="color:red;">{{ error }}</span>
+                        {% endfor %}
+                    </p>
+                    <p>
+                        {{ form.submit(class="button is-info") }}
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
 {% endblock %}

@@ -1,18 +1,25 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Add School Session</h1>
-<a href="{{ url_for('set_active_session') }}">Set active session</a>
-<form action="" method="post" novalidate>
-    {{ form.csrf_token() }}
-    <p>
-        {{ form.session.label }}<br/>
-        {{ form.session(size=32) }}
-        {% for error in form.session.errors %}
-        <span style="color:red;">{{ error }}</span>
-        {% endfor %}
-    </p>
-    <p>{{ form.submit() }}</p>
-</form>
-
+    <div class="title-wrapper has-text-centered">
+        <h2 class="title is-2 is-spaced">Add School Session</h2>
+    </div>
+    <h3 class="subtitle"><a href="{{ url_for('set_active_session') }}">Set active session</a></h3>
+    <div class="content-wrapper">
+        <div class="columns">
+            <div class="column is-4 is-offset-4">
+                <form role="form" action="" method="post" novalidate>
+                    {{ form.csrf_token() }}
+                    <p class="subtitle is-6">
+                        {{ form.session.label(class="label") }}
+                        {{ form.session(class="input") }}
+                        {% for error in form.session.errors %}
+                        <span style="color:red;">{{ error }}</span>
+                        {% endfor %}
+                    </p>
+                    <p>{{ form.submit(class="button is-info") }}</p>
+                </form>
+            </div>
+        </div>
+    </div>
 {% endblock %}

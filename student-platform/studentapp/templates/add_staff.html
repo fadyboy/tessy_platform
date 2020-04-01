@@ -39,14 +39,14 @@
                         {{ form.gender.label(class="label") }}
                         {{ form.gender(class="select") }}
                         {% for error in form.gender.errors %}
-                            <span style="color: red">{{ error }}</span>
+                            <br /><span style="color: red">{{ error }}</span>
                         {% endfor %}
                     </p>
                     <p class="subtitle is-6">
                         {{ form.birthday.label(class="label") }}
-                        {{ form.birthday() }}
+                        {{ form.birthday(class="select") }}
                         {% for error in form.birthday.errors %}
-                            <span style="color: red;">{{ error }}</span>
+                            <br /><span style="color: red;">{{ error }}</span>
                         {% endfor %}
                     </p>
                     <p class="subtitle is-6">

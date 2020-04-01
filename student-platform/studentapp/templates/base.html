@@ -10,6 +10,7 @@
     {% endif %}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+    <link type="text/css" rel="stylesheet" href="{{url_for('static', filename='css/main.css')}}">
 </head>
 <body>
     <nav class="bd-navbar navbar has-shadow is-spaced">
@@ -41,19 +42,26 @@
             </div>
         </div>
     </nav>
-    <div class="container">
+    <div class="master-container">
         <section class="section">
-            {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                <ul>
-                    {% for message in messages %}
-                        <li class="tag is-info is-light subtitle is-6">{{ message }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-            {% endwith %}
-            {% block content %}{% endblock %}
-            </section>
+            <div class="container">
+                {% with messages = get_flashed_messages() %}
+                {% if messages %}
+                    <ul>
+                        {% for message in messages %}
+                            <li class="tag is-info is-light subtitle is-6">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+                {% endwith %}
+                {% block content %}{% endblock %}
+            </div>
+        </section>
     </div>
+    <footer class="footer">
+        <div class="container">
+            &COPY;Tessy International School, 2020
+        </div>
+    </footer>
 </body>
 </html>
