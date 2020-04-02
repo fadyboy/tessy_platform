@@ -1,14 +1,43 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Users</h1>
-    {% for user in users %}
-        <div>Username: {{ user.username }} | Email: {{ user.email }} | Role: {{ user.role }} | Is Active: {{ user.is_active }} | <a href="{{ url_for('user', id=user.id) }}">View</a> </div>
-    {% endfor %}
-    {% if prev_url %}
-        <a href="{{ prev_url }}">Previous Page</a>
-    {% endif %}
-    {% if next_url %}
-        <a href="{{ next_url }}">Next Page</a>
-    {% endif %}
+    <div class="title-wrapper has-text-centered">
+        <h2 class="title is-2 is-spaced">Users</h2>
+    </div>
+    <div class="subtitle"></div>
+    <div class="content-wrapper">
+        <div class="columns is-centered">
+            <div class="column is-four-fifths">
+                <table class="table is-striped is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Is Active</th>
+                            <th>View User</th>
+                        </tr>
+                    </thead>
+                    {% for user in users %}
+                    <tr>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.role }}</td>
+                        <td>{{ user.is_active }}</td>
+                        <td><a href="{{ url_for('user', id=user.id)}}">View</a></td>
+                    </tr>
+                    {% endfor %}
+                </table>
+                <nav class="pagination">
+                    {% if prev_url %}
+                    <a class="pagination-previous" href="{{ prev_url }}">Previous Page</a>
+                    {% endif %}
+                    {% if next_url %}
+                    <a class="pagination-next" href="{{ next_url }}">Next Page</a>
+                    {% endif %}
+                </nav>
+            </div>
+        </div>
+    </div>
+    
 {% endblock %}
