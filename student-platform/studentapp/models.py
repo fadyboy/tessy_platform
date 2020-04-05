@@ -110,7 +110,7 @@ class Role(db.Model):
     name = db.Column(db.String(32), unique=True)
 
     def __repr__(self):
-        return f"Role: {self.name}"
+        return f"{self.name}"
 
 
 class UserRoles(db.Model):

@@ -11,20 +11,20 @@
                 <table class="table is-striped is-fullwidth">
                     <thead>
                         <tr>
-                            <th>Username</th>
-                            <th>Email</th>
-                            <th>Role</th>
-                            <th>Is Active</th>
-                            <th>View User</th>
+                            <th class="has-text-centered">Username</th>
+                            <th class="has-text-centered">Email</th>
+                            <th class="has-text-centered">Role</th>
+                            <th class="has-text-centered">Is Active</th>
+                            <th class="has-text-centered">View User Profile</th>
                         </tr>
                     </thead>
                     {% for user in users %}
                     <tr>
-                        <td>{{ user.username }}</td>
-                        <td>{{ user.email }}</td>
-                        <td>{{ user.role }}</td>
-                        <td>{{ user.is_active }}</td>
-                        <td><a href="{{ url_for('user', id=user.id)}}">View</a></td>
+                        <td class="has-text-centered">{{ user.username }}</td>
+                        <td class="has-text-centered">{{ user.email }}</td>
+                        <td class="has-text-centered">{{ user.role }}</td>
+                        <td class="has-text-centered">{{ user.is_active }}</td>
+                        <td class="has-text-centered"><a href="{{ url_for('user', id=user.id)}}">View</a></td>
                     </tr>
                     {% endfor %}
                 </table>

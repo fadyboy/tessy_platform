@@ -1,23 +1,28 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h2 class="title is-2">{{ user.username }} Profile</h2>
-    <div>
-        <img src="{{ user.get_user_avatar(size=80) }}" />
-        <hr />
+    <div class="title-wrapper has-text-centered">
+        <h2 class="title is-2">{{ user.username }} Profile</h2>
     </div>
-    <div>
-        <p>
-            Email: {{ user.email }}
-        </p>
-        <p>
-            Role: {{ user.role }}
-        </p>
-        <p>
-            Enabled/Disabled: {% if user.is_active %} Enabled {% else %} Disabled {% endif %}
-        </p>
+    <div class="subtitle"></div>
+    <div class="content-wrapper">
+        <div class="columns is-centered">
+            <div class="column is-4">
+                <figure>
+                    <img src="{{ user.get_user_avatar(size=80) }}" />
+                    <hr />
+                </figure>
+                <p class="subtitle is-6">
+                    <span class="has-text-weight-bold">Email:</span> {{ user.email }}
+                </p>
+                <p class="subtitle is-6">
+                    <span class="has-text-weight-bold">Role:</span> {{ user.role }}
+                </p>
+                <p class="subtitle is-6">
+                    <span class="has-text-weight-bold">Enabled/Disabled:</span> {% if user.is_active %} Enabled {% else %} Disabled {% endif %}
+                </p>
+                <a class="button is-info" href="{{ url_for('edit_user', id=user.id) }}">Edit User</a>
+            </div>
+        </div>
     </div>
-    <di>
-        <h4><a href="{{ url_for('edit_user', id=user.id) }}">Edit User</a> </h4>
-    </di>
 {% endblock %}
