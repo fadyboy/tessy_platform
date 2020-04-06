@@ -1,18 +1,40 @@
 {% extends "base.html" %}
 
 {% block content %}
-{% for student in students %}
-<div>
-    Fullname: {{ student.firstname }} {{ student.surname }} | Gender: {{ student.gender }} | {{
-    student.display_classroom_symbol() }} | <a href="{{ url_for('student', id=student.id) }}">View Student</a>
-</div>
-{% endfor %}
-<div>
-    {% if next_url %}
-    <a href="{{ next_url }}">Next Page</a>
-    {% endif %}
-    {% if prev_url %}
-    <a href="{{ prev_url }}">Previous Page</a>
-    {% endif %}
-    {% endblock %}
-</div>
+    <div class="title-wrapper has-text-centered">
+        <h2 class="title is-2">All Students</h2>
+    </div>
+    <div class="subtitle"></div>
+    <div class="content-wrapper">
+        <div class="columns is-centered">
+            <div class="column is-four-fifths">
+                <table class="table is-striped is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th class="has-text-centered">Fullname</th>
+                            <th class="has-text-centered">Gender</th>
+                            <th class="has-text-centered">Class</th>
+                            <th class="has-text-centered">View Student Profile</th>
+                        </tr>
+                    </thead>
+                    {% for student in students %}
+                        <tr>
+                            <td class="has-text-centered">{{ student.firstname }} {{ student.surname }}</td>
+                            <td class="has-text-centered">{{ student.gender }}</td>
+                            <td class="has-text-centered">{{ student.display_classroom_symbol() }}</td>
+                            <td class="has-text-centered"><a href="{{ url_for('student', id=student.id) }}">View</a></td>
+                        </tr>
+                    {% endfor %}
+                </table>
+                <nav class="pagination">
+                    {% if prev_url %}
+                        <a class="pagination-previous" href="{{ prev_url }}">Previous Page</a>
+                    {% endif %}
+                    {% if next_url %}
+                        <a class="pagination-next" href="{{ next_url }}">Next Page</a>
+                    {% endif %}
+                </nav>
+            </div>
+        </div>
+    </div>
+{% endblock %}

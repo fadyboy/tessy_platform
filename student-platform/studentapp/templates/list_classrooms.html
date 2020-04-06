@@ -1,9 +1,38 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Available Classrooms</h1>
-{% for class in classrooms %}
-<p>{{ class.classroom_name }} | {{ class.classroom_symbol }} | <a href="{{ url_for('edit_classroom', id=class.id) }}">Edit
-    classroom</a></p>
-{% endfor %}
+    <div class="title-wrapper has-text-centered">
+        <h2 class="title is-2">Available Classrooms</h2>        
+    </div>
+    <div class="subtitle"></div>
+    <div class="content-wrapper">
+        <div class="columns is-centered">
+            <div class="column is-four-fifths">
+                <table class="table is-striped is-fullwidth">
+                    <thead>
+                        <tr>
+                            <th class="has-text-centered">Class Name</th>
+                            <th class="has-text-centered">Class Symbol</th>
+                            <th class="has-text-centered">Edit Classroom</th>
+                        </tr>
+                    </thead>
+                    {% for class in classrooms %}
+                        <tr>
+                            <td class="has-text-centered">{{ class.classroom_name }}</td>
+                            <td class="has-text-centered">{{ class.classroom_symbol }}</td>
+                            <td class="has-text-centered"><a href="{{ url_for('edit_classroom', id=class.id) }}">Edit</a></td>
+                        </tr>
+                    {% endfor %}
+                </table>
+                <nav class="pagination">
+                    {% if prev_url %}
+                        <a class="pagination-previous" href="{{ prev_url }}">Previous Page</a>
+                    {% endif %}
+                    {% if next_url %}
+                        <a class="pagination-next" href="{{ next_url }}">Next Page</a>
+                    {% endif %}
+                </nav>
+            </div>
+        </div>
+    </div>
 {% endblock %}

@@ -272,9 +272,11 @@ def edit_student(id):
 @app.route("/list_subjects")
 @login_required
 def list_subjects():
-    subjects = Subject.query.all()
+    subjects, next_url, prev_url = \
+        create_pagination_for_page_view(Subject, "list_subjects")
     return render_template("list_subjects.html", title="List Subjects",
-                           subjects=subjects)
+                           subjects=subjects.items, next_url=next_url,
+                           prev_url=prev_url)
 
 
 @app.route("/edit_subject/<id>", methods=["GET", "POST"])
@@ -295,9 +297,11 @@ def edit_subject(id):
 @app.route("/list_classrooms")
 @login_required
 def list_classrooms():
-    classrooms = Classroom.query.all()
+    classrooms, next_url, prev_url = \
+        create_pagination_for_page_view(Classroom, "list_classrooms")
     return render_template("list_classrooms.html", title="List Classrooms",
-                           classrooms=classrooms)
+                           classrooms=classrooms.items, next_url=next_url,
+                           prev_url=prev_url)
 
 
 @app.route("/edit_classroom/<id>", methods=["GET", "POST"])
