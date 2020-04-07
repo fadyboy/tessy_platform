@@ -58,6 +58,8 @@ class AddUserForm(FlaskForm):
 
 
 class EditUserForm(FlaskForm):
+    username = StringField("Username")
+    email = StringField("Email")
     password = PasswordField(
                             "Password",
                             validators=[DataRequired(),

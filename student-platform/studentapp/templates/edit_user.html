@@ -1,40 +1,54 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Edit User - {{ user.username }} Profile</h1>
-    <p>Username: {{user.username }}</p>
-    <p>Email: {{ user.email }}</p>
-    <form action="" method="post" novalidate>
-        {{ form.hidden_tag() }}
-        <p>
-            {{ form.password.label }} <br/>
-            {{ form.password(size=32) }}
-            {% for error in form.password.errors %}
-               <span style="color: red;">{{ error }}</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.password2.label }} <br/>
-            {{ form.password2(size=32) }}
-            {% for error in form.password2.errors %}
-                <span style="color: red;">{{ error }}</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.is_active.label }} <br/>
-            {{ form.is_active() }}
-            {% for error in form.is_active.errors %}
-                <span style="color:red;">{{ error }}</span>
-            {% endfor %}
-        </p>
-        <p>
-            {{ form.roles.label }}
-            {{ form.roles() }}
-            {% for error in form.roles.errors %}
-                <span style="color:red;">{{ error }}</span>
-            {% endfor %}
-        </p>
-        <p> {{ form.submit() }}</p>
-    </form>
-    <a href="{{ url_for('list_users') }}"><button>Cancel</button></a>
+    <div class="title-wrapper has-text-centered">
+        <h2 class="title is-2">Edit User - {{ user.username }} Profile</h2>
+    </div>
+    <div class="subtitle"></div>
+    <div class="content-wrapper">
+        <div class="columns is-centered">
+            <div class="column is-3">
+                <form role="form" action="" method="POST" novalidate>
+                    {{ form.hidden_tag() }}
+                    <p class="subtitle is-6">
+                        {{ form.username.label(class="label") }}
+                        {{ form.username(class="input", disabled=true) }}
+                    </p>
+                    <p class="subtitle is-6">
+                        {{ form.email.label(class="label") }}
+                        {{ form.email(class="input", disabled=true)}}
+                    </p>
+                    <p class="subtitle is-6">
+                        {{ form.password.label(class="label") }}
+                        {{ form.password(class="input") }}
+                        {% for error in form.password.errors %}
+                           <span style="color: red;">{{ error }}</span>
+                        {% endfor %}
+                    </p>
+                    <p class="subtitle is-6">
+                        {{ form.password2.label(class="label") }}
+                        {{ form.password2(class="input") }}
+                        {% for error in form.password2.errors %}
+                            <span style="color: red;">{{ error }}</span>
+                        {% endfor %}
+                    </p>
+                    <p class="subtitle is-6">
+                        {{ form.is_active.label(class="label") }}
+                        {{ form.is_active(class="select") }}
+                        {% for error in form.is_active.errors %}
+                            <span style="color:red;">{{ error }}</span>
+                        {% endfor %}
+                    </p>
+                    <p class="subtitle is-6">
+                        {{ form.roles.label(class="label") }}
+                        {{ form.roles(class="select")}}
+                    </p>
+                    <div class="buttons level are-medium">
+                        {{ form.submit(class="button is-info level-left") }}
+                        <a href="{{ url_for('list_users') }}" class="button is-info level right">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 {% endblock %}

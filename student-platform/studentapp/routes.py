@@ -169,8 +169,13 @@ def user(id):
 @app.route("/edit_user/<id>", methods=["GET", "POST"])
 @login_required
 def edit_user(id):
-    form = EditUserForm()
     user = User.query.get(id)
+    form = EditUserForm(
+        username=user.username,
+        email=user.email,
+        is_active=user.is_active,
+        roles=user.role
+    )
     if form.validate_on_submit():
         user.set_password_hash(form.password.data)
         user.is_active = bool(strtobool(form.is_active.data))
