@@ -1,10 +1,10 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, SubmitField, SelectField, \
-                HiddenField
+    HiddenField
 from wtforms.fields.html5 import DateField
 from wtforms_sqlalchemy.fields import QuerySelectField
 from wtforms.validators import DataRequired, ValidationError, Email, EqualTo, \
-                            Length
+    Length
 from studentapp.models import Role, User, Classroom, Subject, Staff, Student, \
     Sessions
 
@@ -29,13 +29,15 @@ class AddUserForm(FlaskForm):
     username = StringField("Username", validators=[DataRequired()])
     email = StringField("Email", validators=[DataRequired(), Email()])
     password = PasswordField("Password", validators=[DataRequired(),
-                             Length(min=6,
-                                    message="Password must have at \
+                                                     Length(min=6,
+                                                            message="Password must have at \
                                         least 6 characters")])
     password2 = PasswordField("Repeat Password",
                               validators=[DataRequired(),
                                           EqualTo("password",
-                                          message="Passwords must match")])
+                                                  message="Passwords must \
+                                                      match"
+                                                  )])
     roles = QuerySelectField(query_factory=roles_query, allow_blank=True,
                              get_label="name", get_pk=get_pk,
                              validators=[DataRequired()])
@@ -61,13 +63,14 @@ class EditUserForm(FlaskForm):
     username = StringField("Username")
     email = StringField("Email")
     password = PasswordField(
-                            "Password",
-                            validators=[DataRequired(),
-                                        Length(min=6, message="Password must have at least \
+        "Password",
+        validators=[DataRequired(),
+                    Length(min=6, message="Password must have at least \
                                         6 characters")])
     password2 = PasswordField("Repeat Password",
                               validators=[EqualTo("password",
-                                          message="Passwords must match"),
+                                                  message="Passwords must \
+                                                      match"),
                                           DataRequired()])
     is_active = SelectField("Enable/Disable",
                             choices=[("", ""),
@@ -92,22 +95,24 @@ class AddStaffForm(FlaskForm):
     birthday = DateField("Birthday", format="%Y-%m-%d",
                          validators=[DataRequired()])
     contact_number = StringField("Contact Number")
-    email = StringField("Email", validators=[DataRequired(),
-                        Email("Please enter valid email")])
+    email = StringField("Email",
+                        validators=[DataRequired(),
+                                    Email("Please enter valid email")])
     address = StringField("Address")
     submit = SubmitField("Submit")
 
     def validate_serial_number(self, serial_number):
         serial = Staff.query.filter_by(
             serial_number=serial_number.data
-            ).first()
+        ).first()
         if serial is not None:
             raise ValidationError(
-                        f"{serial.serial_number} \
+                f"{serial.serial_number} \
                         is already in use! Please enter another staff number")
 
 
 class EditStaffForm(FlaskForm):
+    serial_number = StringField("Staff Number")
     firstname = StringField("Firstname",
                             validators=[DataRequired(message="Firstname is \
                                  required")])
@@ -148,14 +153,15 @@ class AddStudentForm(AddStaffForm):
     def validate_serial_number(self, serial_number):
         serial = Student.query.filter_by(
             serial_number=serial_number.data
-            ).first()
+        ).first()
         if serial is not None:
             raise ValidationError(
-                                  f"{serial.serial_number} is already in use! \
+                f"{serial.serial_number} is already in use! \
                                       Please enter another student number")
 
 
 class EditStudentForm(EditStaffForm):
+    serial_number = StringField("Student Number")
     contact_number = StringField("Parent/Guardian Contact Number",
                                  validators=[DataRequired()])
     email = StringField("Parent/Guardian Email", validators=[DataRequired()])
@@ -175,9 +181,10 @@ class AddClassroomForm(FlaskForm):
 
 
 class EditClassroomForm(FlaskForm):
-    classroom_name = StringField("Classroom Name")
-    classroom_symbol = StringField("Classroom Symbol")
-    submit = SubmitField("Submit Changes")
+    classroom_name = StringField("Classroom Name", validators=[DataRequired()])
+    classroom_symbol = StringField("Classroom Symbol",
+                                   validators=[DataRequired()])
+    submit = SubmitField("Submit")
 
 
 class AddSubjectForm(FlaskForm):
@@ -279,27 +286,27 @@ class ResetPasswordRequestForm(FlaskForm):
                         validators=[DataRequired(
                             message="Please enter email"),
                             Email(message="Please enter valid email")
-                            ]
+                        ]
                         )
     submit = SubmitField("Request Password Reset")
 
 
 class ResetPasswordForm(FlaskForm):
     password = PasswordField(
-                             "Password",
-                             validators=[DataRequired(
-                                 message="Password must contain minimum 6 \
+        "Password",
+        validators=[DataRequired(
+            message="Password must contain minimum 6 \
                                      characters"
-                             ),
-                                        Length(min=6)
-                             ]
-                             )
+        ),
+            Length(min=6)
+        ]
+    )
     password2 = PasswordField(
-                              "Repeat Password",
-                              validators=[DataRequired(),
-                                          EqualTo(password,
-                                                  message="Passwords must \
+        "Repeat Password",
+        validators=[DataRequired(),
+                    EqualTo(password,
+                            message="Passwords must \
                                                       match"
-                                                  )
-                                          ])
+                            )
+                    ])
     submit = SubmitField("Reset Password")

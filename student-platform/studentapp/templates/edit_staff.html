@@ -1,53 +1,64 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Edit Staff - {{ staff.firstname }} {{ staff.surname }}</h1>
-    <div>
-        <p>Staff No: {{ staff.serial_number }}</p>
-        <form action="" method="post" novalidate>
-            {{ form.hidden_tag() }}
-            <p>
-                {{ form.firstname.label }}<br/>
-                {{ form.firstname(size=32, value=staff.firstname) }}
-                {% for error in form.firstname.errors %}
-                    <span style="color: red;">{{ error }}</span>
-                {% endfor %}
-            </p>
-            <p>
-                {{ form.middlename.label }}<br/>
-                {{ form.middlename(size=32, value=staff.middlename) }}
-            </p>
-            <p>
-                {{ form.surname.label }}<br/>
-                {{ form.surname(size=32, value=staff.surname) }}
-                {% for error in form.surname.errors %}
-                    <span style="color:red;">{{ error }}</span>
-                {% endfor %}
-            </p>
-            <p>
-                {{ form.contact_number.label }}<br/>
-                {{ form.contact_number(size=32, value=staff.contact_number) }}
-                {% for error in form.contact_number.errors %}
-                    <span style="color: red;">{{ error }}</span>
-                {% endfor %}
-            </p>
-            <p>
-                {{ form.email.label }}<br/>
-                {{ form.email(size=32, value=staff.email) }}
-                {% for error in form.email.errors %}
-                  <span style="color:red;">{{ error }}</span>
-                {% endfor %}
-            </p>
-            <p>
-                {{ form.address.label }}<br/>
-                {{ form.address(size=64, value=staff.address) }}
-                {% for error in form.address.errors %}
-                    <span style="color:red;">{{ error }}</span>
-                {% endfor %}
-            </p>
-            <p>{{ form.submit() }}</p>
-        </form>
-        <a href="{{ url_for('list_staff') }}"><button>Cancel</button></a>
+    <div class="title-wrapper has-text-centered">
+        <h2 class="title is-2">Edit Staff - {{ staff.firstname }} {{ staff.surname }}</h2>
     </div>
-
+    <div class="subtitle"></div>
+    <div class="content-wrapper">
+        <div class="columns is-centered">
+            <div class="column is-3">
+                <form role="form" action="" method="POST" novalidate>
+                    {{ form.hidden_tag() }}
+                    <p class="subtitle is-6">
+                        {{ form.serial_number.label(class="label") }}
+                        {{ form.serial_number(class="input", disabled=True) }}
+                    </p>
+                    <p class="subtitle is-6">
+                        {{ form.firstname.label(class="label") }}
+                        {{ form.firstname(class="input") }}
+                        {% for error in form.firstname.errors %}
+                            <span style="color: red;">{{ error }}</span>
+                        {% endfor %}
+                    </p>
+                    <p class="subtitle is-6">
+                        {{ form.middlename.label(class="label") }}
+                        {{ form.middlename(class="input")}}
+                    </p>
+                    <p class="subtitle is-6">
+                        {{ form.surname.label(class="label") }}
+                        {{ form.surname(class="input") }}
+                        {% for error in form.surname.errors %}
+                            <span style="color: red;">{{ error }}</span>
+                        {% endfor %}
+                    </p>
+                    <p class="subtitle is-6">
+                        {{ form.contact_number.label(class="label") }}
+                        {{ form.contact_number(class="input") }}
+                        {% for error in form.contact_number.error %}
+                            <span style="color: red;">{{ error }}</span>
+                        {% endfor %}
+                    </p>
+                    <p class="subtitle is-6">
+                        {{ form.email.label(class="label") }}
+                        {{ form.email(class="input")}}
+                        {% for error in form.email.errors %}
+                            <span style="color: red;">{{ error }}</span>
+                        {% endfor %}
+                    </p>
+                    <p class="subtitle is-6">
+                        {{ form.address.label(class="label") }}
+                        {{ form.address(class="input") }}
+                        {% for error in form.address.errors %}
+                            <span style="color: red;">{{ error }}</span>
+                        {% endfor %}
+                    </p>
+                    <div class="buttons level">
+                        {{ form.submit(class="button is-info level-left") }}
+                        <a href="{{ url_for('list_staff') }}" class="button is-info level-right">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 {% endblock %}

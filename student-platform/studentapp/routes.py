@@ -226,8 +226,16 @@ def student(id):
 @app.route("/edit_staff/<id>", methods=["GET", "POST"])
 @login_required
 def edit_staff(id):
-    form = EditStaffForm()
     staff = Staff.query.get(id)
+    form = EditStaffForm(
+        serial_number=staff.serial_number,
+        firstname=staff.firstname,
+        middlename=staff.middlename,
+        surname=staff.surname,
+        contact_number=staff.contact_number,
+        email=staff.email,
+        address=staff.address
+    )
     if form.validate_on_submit():
         staff.firstname = form.firstname.data
         staff.middlename = form.middlename.data
@@ -249,6 +257,7 @@ def edit_student(id):
     # get classroom object to pre-populate classroom selection
     classroom = Classroom.query.get(student.classroom_id)
     form = EditStudentForm(
+        serial_number=student.serial_number,
         firstname=student.firstname,
         middlename=student.middlename,
         surname=student.surname,
@@ -313,7 +322,10 @@ def list_classrooms():
 @login_required
 def edit_classroom(id):
     classroom = Classroom.query.get(id)
-    form = EditClassroomForm()
+    form = EditClassroomForm(
+        classroom_name=classroom.classroom_name,
+        classroom_symbol=classroom.classroom_symbol
+    )
     if form.validate_on_submit():
         classroom.classroom_name = form.classroom_name.data
         classroom.classroom_symbol = form.classroom_symbol.data

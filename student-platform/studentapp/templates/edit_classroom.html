@@ -1,18 +1,35 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Edit {{ classroom.classroom_name }}</h1>
-<form action="" method="post" novalidate>
-    {{ form.hidden_tag() }}
-    <p>
-        {{ form.classroom_name.label }}<br/>
-        {{ form.classroom_name(size=32, value=classroom.classroom_name) }}
-    </p>
-    <p>
-        {{ form.classroom_symbol.label }}<br/>
-        {{ form.classroom_symbol(size=8, value=classroom.classroom_symbol) }}
-    </p>
-    <p>{{ form.submit() }}</p>
-</form>
-<a href="{{ url_for('list_classrooms') }}"><button>Cancel</button></a>
+    <div class="title-wrapper has-text-centered">
+        <h2 class="title is-2">Edit {{ classroom.classroom_name }}</h2>
+    </div>
+    <div class="subtitle"></div>
+    <div class="content-wrapper">
+        <div class="columns is-centered">
+            <div class="column is-3">
+               <form role="form" action="" method="POST" novalidate>
+                   <p class="subtitle is-6">
+                       {{ form.classroom_name.label(class="label") }}
+                       {{ form.classroom_name(class="input") }}
+                       {% for error in form.classroom_name.errors %}
+                            <span style="color: red;">{{ error }}</span>
+                        {% endfor %}
+                   </p>
+                   <p class="subtitle is-6">
+                       {{ form.classroom_symbol.label(class="label") }}
+                       {{ form.classroom_symbol(class="input") }}
+                       {% for error in form.classroom_symbol.errors %}
+                            <span style="color: red;">{{ error }}</span>
+                        {% endfor %}
+                   </p>
+                   <div class="buttons level">
+                       {{ form.submit(class="button is-info level-left")}}
+                       <a href="{{ url_for('list_classrooms') }}" class="button is-info level-right">Cancel</a>
+                   </div>
+               </form>
+            </div>
+        </div>
+    </div>
+
 {% endblock %}

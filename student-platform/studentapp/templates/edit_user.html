@@ -2,7 +2,7 @@
 
 {% block content %}
     <div class="title-wrapper has-text-centered">
-        <h2 class="title is-2">Edit User - {{ user.username }} Profile</h2>
+        <h2 class="title is-2">Edit Profile - {{ user.username }}</h2>
     </div>
     <div class="subtitle"></div>
     <div class="content-wrapper">
@@ -12,11 +12,11 @@
                     {{ form.hidden_tag() }}
                     <p class="subtitle is-6">
                         {{ form.username.label(class="label") }}
-                        {{ form.username(class="input", disabled=true) }}
+                        {{ form.username(class="input", disabled=True) }}
                     </p>
                     <p class="subtitle is-6">
                         {{ form.email.label(class="label") }}
-                        {{ form.email(class="input", disabled=true)}}
+                        {{ form.email(class="input", disabled=True)}}
                     </p>
                     <p class="subtitle is-6">
                         {{ form.password.label(class="label") }}
@@ -34,7 +34,7 @@
                     </p>
                     <p class="subtitle is-6">
                         {{ form.is_active.label(class="label") }}
-                        {{ form.is_active(class="select") }}
+                        {{ form.is_active(class="select", value=user.is_active) }}
                         {% for error in form.is_active.errors %}
                             <span style="color:red;">{{ error }}</span>
                         {% endfor %}
@@ -43,7 +43,7 @@
                         {{ form.roles.label(class="label") }}
                         {{ form.roles(class="select")}}
                     </p>
-                    <div class="buttons level are-medium">
+                    <div class="buttons level">
                         {{ form.submit(class="button is-info level-left") }}
                         <a href="{{ url_for('list_users') }}" class="button is-info level right">Cancel</a>
                     </div>
