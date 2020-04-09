@@ -1,15 +1,26 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Set Active Session</h1>
-<form action="" method="post">
-    {{ form.csrf_token() }}
-    <p>
-        {{ form.session() }}
-        {% for error in form.session.errors %}
-        <span style="color: red;">{{ error }}</span>
-        {% endfor %}
-    </p>
-    <p>{{ form.submit() }}</p>
-</form>
+    <div class="title-wrapper has-text-centered">
+        <h2 class="title is-2">Set Active Session</h>
+    </div>
+    <div class="subtitle"></div>
+    <div class="content-wrapper">
+        <div class="columns is-centered">
+            <div class="column is-3">
+                <form role="form" action="" method="POST" novalidate>
+                    {{ form.csrf_token() }}
+                    <p class="subtitle is-6">
+                        {{ form.session(class="select") }}
+                        {% for error in form.session.errors %}
+                            <span style="color: red;">{{ error }}</span>
+                        {% endfor %}
+                    </p>
+                    <p class="subtitle is-6">
+                        {{ form.submit(class="button is-info") }}
+                    </p>
+                </form>
+            </div>
+        </div>
+    </div>
 {% endblock %}

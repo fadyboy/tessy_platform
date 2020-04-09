@@ -297,7 +297,10 @@ def list_subjects():
 @login_required
 def edit_subject(id):
     subject = Subject.query.get(id)
-    form = EditSubjectForm()
+    form = EditSubjectForm(
+        name=subject.name,
+        code=subject.code
+    )
     if form.validate_on_submit():
         subject.name = form.name.data
         subject.code = form.code.data

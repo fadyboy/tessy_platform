@@ -208,7 +208,7 @@ class AddSubjectForm(FlaskForm):
 class EditSubjectForm(FlaskForm):
     name = StringField("Subject Name")
     code = StringField("Subject Code")
-    submit = SubmitField("Submit Change")
+    submit = SubmitField("Submit")
 
 
 def subjects_query():
