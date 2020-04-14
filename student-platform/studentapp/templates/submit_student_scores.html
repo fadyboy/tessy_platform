@@ -1,47 +1,62 @@
 {% extends "base.html" %}
 
 {% block content %}
-<p>Term: {{ term }}</p>
-<p>Session: {{ sessions.session }}</p>
-<p>Subject: {{ subject.name }}</p>
-<p>Classroom: {{ classroom.classroom_symbol }}</p>
-{% if students|length == 0 %}
-        <b>No students found in {{ classroom.classroom_symbol }} taking {{ subject.name }}</b>
-{% else %}
-    <table>
-        <thead>
-        <th>Student Name</th>
-        <th>CA Score</th>
-        <th>Exam Score</th>
-        <th>Action</th>
-        </thead>
-        {% for student in students %}
-        <tr>
-            <td>{{ student }}</td>
-            <form action="" method="post" novalidate>
-                {{ form.csrf_token() }}
-                {{ form.student_id(value=student.id) }}
-                {{ form.classroom_id(value=classroom.id) }}
-                {{ form.subject_id(value=subject.id) }}
-                {{ form.term(value=term) }}
-                {{ form.sessions_id(value=sessions.id) }}
-                <td>
-                    {{ form.ca_score(size=5) }}
-                    {% for error in form.ca_score.errors %}
-                    <span style="color:red;">{{ error }}</span>
-                    {% endfor %}
-                </td>
-                <td>
-                    {{ form.exam_score(size=5) }}
-                    {% for error in form.exam_score.errors %}
-                    <span style="color:red;">{{ error }}</span>
-                    {% endfor %}
-                </td>
-                <td>{{ form.submit() }}</td>
-            </form>
-        </tr>
-        {% endfor %}
-    </table>
-    <a href="{{url_for('select_score_options') }}"><button>Cancel</button></a>
-{% endif %}
+    <div class="title-wrapper has-text-centered">
+        <h2 class="title is-2">Enter Student Scores</h2>
+    </div>
+    <div class="subtitle"></div>
+    <div class="content-wrapper">
+        <div class="columns">
+            <div class="column is-four-fifths">
+                <p><strong>Term: </strong>{{ term }}</p>
+                <p><strong>Session: </strong>{{ sessions.session }}</p>
+                <p><strong>Subject: </strong>{{ subject.name }}</p>
+                <p><strong>Classroom: </strong>{{ classroom.classroom_symbol }}</p>
+                <hr class="hr" />
+                {% if students|length == 0 %}
+                    <strong>No students found in {{ classroom.classroom_symbol }} taking {{ subject.name }}</strong>
+                {% else %}
+                    <table class="table is-fullwidth">
+                        <thead>
+                            <tr>
+                                <th class="has-text-centered">Student Name</th>
+                                <th class="has-text-centered">CA Score</th>
+                                <th class="has-text-centered">Exam Score</th>
+                                <th class="has-text-centered">Action</th>
+                            </tr>
+                        </thead>
+                        {% for student in students %}
+                            <tr>
+                                <td>{{ student }}</td>
+                                <form action="" method="POST" novalidate>
+                                    {{ form.csrf_token() }}
+                                    {{ form.student_id(value=student.id) }}
+                                    {{ form.classroom_id(value=classroom.id) }}
+                                    {{ form.subject_id(value=subject.id) }}
+                                    {{ form.term(value=term) }}
+                                    {{ form.sessions_id(value=sessions.id) }}
+                                </form>
+                                <td class="has-text-centered">
+                                    {{ form.ca_score(class="input") }}
+                                    {% for error in form.ca_score.errors %}
+                                        <span style="color: red;">{{ error }}</span>
+                                    {% endfor %}
+                                </td>
+                                <td class="has-text-centered">
+                                    {{ form.exam_score(class="input") }}
+                                    {% for error in form.exam_score.errors %}
+                                        <span style="color: red;">{{ error }}</span>
+                                    {% endfor %}
+                                </td>
+                                <td class="has-text-centered">
+                                    {{ form.submit(class="button is-info") }}
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </table>
+                    <a href="{{url_for('select_score_options') }}" class="button is-info">Cancel</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 {% endblock %}
