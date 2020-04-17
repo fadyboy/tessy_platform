@@ -27,7 +27,7 @@
                         <td class="has-text-centered">{{ student.display_classroom_symbol() }}</td>
                         <td class="has-text-centered">{{ term }}</td>
                         <td class="has-text-centered">{{ active_session.session }}</td>
-                        <td class="has-text-centered">15</td>
+                        <td class="has-text-centered">{{ student.get_total_students_in_class() }}</td>
                     </tr>
                 </table>
                 {% if records|length == 0 %}
@@ -43,6 +43,8 @@
                             <th class="has-text-centered">Total</th>
                             <th class="has-text-centered">Grade</th>
                             <th class="has-text-centered">Remarks</th>
+                            <th class="has-text-centered">Average Score</th>
+                            <th class="has-text-centered">Position</th>
                         </thead>
                         {% for record in records %}
                         <tr>
@@ -52,6 +54,8 @@
                             <td class="has-text-centered">{{ record.total }}</td>
                             <td class="has-text-centered">{{ record.grade }}</td>
                             <td class="has-text-centered">{{ record.remark }}</td>
+                            <td class="has-text-centered">{{ record.average_score }}</td>
+                            <td class="has-text-centered">{{ record.score_position }}</td>
                         </tr>
                         {% endfor %}
                     </table>

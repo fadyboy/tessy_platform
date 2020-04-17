@@ -1,4 +1,5 @@
 import jwt
+import inflect
 from studentapp import db, login, app
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
@@ -92,6 +93,10 @@ class Student(Person):
         classroom = Classroom.query.get(self.classroom_id)
         return classroom.classroom_symbol
 
+    def get_total_students_in_class(self):
+        classroom = Classroom.query.get(self.classroom_id)
+        return classroom.total_students_in_classroom()
+
 
 class Classroom(db.Model):
     __tablename__ = "classroom"
@@ -102,6 +107,11 @@ class Classroom(db.Model):
 
     def __repr__(self):
         return f"Classroom: {self.classroom_symbol}"
+
+    def total_students_in_classroom(self):
+        students_list = [student for student in self.students]
+        total_students = len(students_list)
+        return total_students
 
 
 class Role(db.Model):
@@ -208,9 +218,41 @@ class StudentResults(db.Model):
 
         return grade, grade_remark
 
-    # TODO: Functionality to calculate average score in subject
-    # TODO: Functionality to calculate student score rank in subject
-    # TODO: Functionality to get the lowest and highest score in subject
+    @staticmethod
+    def calculate_subject_average_score_in_class(subject_id,
+                                                 classroom_id, term,
+                                                 sessions_id):
+        subject_score_average = db.session.query(db.func.avg(
+                                                StudentResults.total_score)
+                                                ).filter_by(
+                                                    subject_id=subject_id,
+                                                    classroom_id=classroom_id,
+                                                    term=term,
+                                                    sessions_id=sessions_id
+                                                    ).all()
+        # return the first element of the tuple
+        return subject_score_average[0][0]
+
+    @staticmethod
+    def calculate_score_position_in_subject(
+        subject_id, classroom_id, term, sessions_id,
+        student_total_score
+    ):
+        subject_total_scores_query = db.session.query(
+            StudentResults.total_score
+        ).filter_by(
+            subject_id=subject_id,
+            classroom_id=classroom_id,
+            term=term,
+            sessions_id=sessions_id
+        ).order_by(
+            db.desc(StudentResults.total_score)
+        ).all()
+        # convert query to list of scores
+        subject_total_scores = [x[0] for x in subject_total_scores_query]
+        student_score_index = subject_total_scores.index(student_total_score)
+        pos_engine = inflect.engine()
+        return pos_engine.ordinal(student_score_index + 1)
 
 
 @login.user_loader

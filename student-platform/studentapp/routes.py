@@ -429,6 +429,7 @@ def view_student_result():
                                                   StudentResults.subject_id
                                                   ).all()
     student = Student.query.get(student_id)
+    classroom_id = student.classroom_id
 
     records = []
     for record in student_records:
@@ -440,6 +441,17 @@ def view_student_result():
         record_details["total"] = record.total_score
         record_details["grade"] = record.grade
         record_details["remark"] = record.grade_remark
+        # calculate subject average score
+        avg_score = StudentResults.calculate_subject_average_score_in_class(
+            record.subject_id, classroom_id, term, active_session.id
+        )
+        record_details["average_score"] = avg_score
+        # calculate student score position in subject
+        student_score_pos = StudentResults.calculate_score_position_in_subject(
+            record.subject_id, classroom_id, term, active_session.id,
+            record.total_score
+        )
+        record_details["score_position"] = student_score_pos
         records.append(record_details)
 
     return render_template("view_student_result.html",
