@@ -35,7 +35,6 @@
                                     {{ form.subject_id(value=subject.id) }}
                                     {{ form.term(value=term) }}
                                     {{ form.sessions_id(value=sessions.id) }}
-                                </form>
                                 <td class="has-text-centered">
                                     {{ form.ca_score(class="input") }}
                                     {% for error in form.ca_score.errors %}
@@ -51,6 +50,7 @@
                                 <td class="has-text-centered">
                                     {{ form.submit(class="button is-info") }}
                                 </td>
+                                </form>
                             </tr>
                         {% endfor %}
                     </table>
