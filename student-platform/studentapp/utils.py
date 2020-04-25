@@ -3,11 +3,9 @@ from flask import request, url_for
 from studentapp import app
 
 
-def avatar(email, size, default_pic=None):
+def avatar(email, size):
     digest = md5(email.lower().encode("utf-8")).hexdigest()
-    if not default_pic:
-        default_pic = "identicon"
-    return f"https://www.gravatar.com/avatar/{digest}?d={default_pic}&s={size}"
+    return f"https://www.gravatar.com/avatar/{digest}?d=identicon&s={size}"
 
 
 def create_pagination_for_page_view(model_object, view_function):

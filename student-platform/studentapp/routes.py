@@ -7,7 +7,8 @@ from studentapp.forms import (LoginForm, AddUserForm, AddStaffForm,
                               EditSubjectForm, EditClassroomForm,
                               EnterStudentScoresForm, SubmitStudentScoresForm,
                               AddSessionForm, SetActiveSessionForm,
-                              ResetPasswordRequestForm, ResetPasswordForm)
+                              ResetPasswordRequestForm, ResetPasswordForm,
+                              UploadImageForm)
 from studentapp.models import (
     User, Staff, Student, Classroom, Subject, Sessions, StudentResults
     )
@@ -15,6 +16,12 @@ from flask_login import current_user, login_user, logout_user, login_required
 from studentapp.utils import create_pagination_for_page_view
 from distutils.util import strtobool
 from studentapp.email import send_password_reset_email
+from flask_uploads import configure_uploads, UploadSet, IMAGES
+
+
+# settings for images
+images = UploadSet("images", IMAGES)
+configure_uploads(app, images)
 
 
 @app.route("/")
@@ -211,16 +218,19 @@ def list_students():
 @app.route("/staff/<id>")
 @login_required
 def staff(id):
+    form = UploadImageForm()
     staff = Staff.query.get_or_404(id, description="Staff not found")
-    return render_template("staff.html", title="Staff Profile", staff=staff)
+    return render_template("staff.html", title="Staff Profile", staff=staff,
+                           form=form)
 
 
 @app.route("/student/<id>")
 @login_required
 def student(id):
+    form = UploadImageForm()
     student = Student.query.get_or_404(id, description="Student not found")
     return render_template("student.html", title="Student Profile",
-                           student=student)
+                           student=student, form=form)
 
 
 @app.route("/edit_staff/<id>", methods=["GET", "POST"])
@@ -525,3 +535,27 @@ def reset_password(token):
         return redirect(url_for("login"))
     return render_template("reset_password.html", form=form,
                            title="Reset Password")
+
+
+@app.route("/upload_image", methods=["GET", "POST"])
+@login_required
+def upload_image():
+    if request.method == "POST":
+        obj_id = request.args.get("id")
+        obj_type = request.args.get("obj_type")
+        if obj_type == "Student":
+            person_obj = Student.query.get(obj_id)
+            url_func = "student"
+        elif obj_type == "Staff":
+            person_obj = Staff.query.get(obj_id)
+            url_func = "staff"
+        image_file = request.files["image_file"]
+        if image_file.filename == "":
+            flash("No image file selected")
+            return redirect(url_for(url_func, id=obj_id))
+        if image_file.filename != "":
+            image_file_name = images.save(image_file)
+            person_obj.image_file_name = image_file_name
+            db.session.commit()
+            flash("Image saved!")
+    return redirect(url_for(url_func, id=obj_id))

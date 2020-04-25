@@ -5,6 +5,7 @@ from wtforms.fields.html5 import DateField
 from wtforms_sqlalchemy.fields import QuerySelectField
 from wtforms.validators import DataRequired, ValidationError, Email, EqualTo, \
     Length
+from flask_wtf.file import FileRequired, FileField
 from studentapp.models import Role, User, Classroom, Subject, Staff, Student, \
     Sessions
 
@@ -310,3 +311,10 @@ class ResetPasswordForm(FlaskForm):
                             )
                     ])
     submit = SubmitField("Reset Password")
+
+
+class UploadImageForm(FlaskForm):
+    image_file = FileField(
+        validators=[FileRequired(message="Please upload a valid image")]
+    )
+    submit = SubmitField("Save Image")

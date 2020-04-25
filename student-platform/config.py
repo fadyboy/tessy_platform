@@ -20,3 +20,8 @@ class Config:
     MAIL_USERNAME = os.environ.get("MAIL_USERNAME")
     MAIL_PASSWORD = os.environ.get("MAIL_PASSWORD")
     ADMINS = ["aofadero@gmail.com"]  # TODO: Add email address
+
+    # profile pictures upload folder
+    UPLOADED_IMAGES_DEST = os.path.join(
+        basedir, "studentapp/static/images/profile_pics"
+        )

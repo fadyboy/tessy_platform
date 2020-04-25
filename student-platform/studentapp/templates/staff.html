@@ -7,9 +7,31 @@
     <div class="subtitle"></div>
     <div class="content-wrapper">
         <div class="columns is-centered">
-            <div class="column is-4">
+            <div class="column is-three-fifths">
                 <figure>
+                    {% if staff.image_file_name %}
+                    <img src="{{ url_for('static', filename='images/profile_pics/{}'.format(staff.image_file_name))}}" class="image is-128x128"/>
+                    {% else %}
                     <img src="{{ staff.get_person_avatar(size=80) }}" />
+                    {% endif %}
+                    <div class="subtitle"></div>
+                    <form action="{{url_for('upload_image', id=staff.id, obj_type='Staff') }}" method="POST" enctype="multipart/form-data">
+                        {{ form.hidden_tag() }}
+                        <div class="file is-small">
+                            <label class="file-label">
+                                {{ form.image_file(class="file-input") }}
+                                <span class="file-cta">
+                                    <span class="file-icon">
+                                        <i class="fas fa-upload"></i>
+                                    </span>
+                                    <span class="file-label">
+                                        Select file...
+                                    </span>
+                                </span>
+                            </label>
+                            &nbsp;{{ form.submit(class="button is-info is-small is-outlined") }}
+                        </div>
+                    </form>
                     <hr />
                 </figure>
                 <p class="subtitle is-6">
