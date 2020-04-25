@@ -169,8 +169,10 @@ def list_users():
 @app.route("/user/<id>")
 @login_required
 def user(id):
+    form = UploadImageForm()
     user = User.query.get_or_404(id, description="User not found")
-    return render_template("user.html", title="User Profile", user=user)
+    return render_template("user.html", title="User Profile", user=user,
+                           form=form)
 
 
 @app.route("/edit_user/<id>", methods=["GET", "POST"])
@@ -549,6 +551,9 @@ def upload_image():
         elif obj_type == "Staff":
             person_obj = Staff.query.get(obj_id)
             url_func = "staff"
+        elif obj_type == "User":
+            person_obj = User.query.get(obj_id)
+            url_func = "user"
         image_file = request.files["image_file"]
         if image_file.filename == "":
             flash("No image file selected")

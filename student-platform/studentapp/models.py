@@ -17,6 +17,7 @@ class User(db.Model, UserMixin):
     password_hash = db.Column(db.String(128))
     is_active = db.Column(db.Boolean, nullable=False, server_default="t")
     role = db.relationship("Role", secondary="user_roles", uselist=False)
+    image_file_name = db.Column(db.String(128))
 
     def __repr__(self):
         return f"User: {self.username}"
