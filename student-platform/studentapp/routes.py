@@ -1,4 +1,6 @@
-from flask import render_template, flash, redirect, url_for, request
+import pdfkit
+from flask import render_template, flash, redirect, url_for, request,\
+                  make_response
 from werkzeug.urls import url_parse
 from studentapp import app, db
 from studentapp.forms import (LoginForm, AddUserForm, AddStaffForm,
@@ -13,7 +15,8 @@ from studentapp.models import (
     User, Staff, Student, Classroom, Subject, Sessions, StudentResults
     )
 from flask_login import current_user, login_user, logout_user, login_required
-from studentapp.utils import create_pagination_for_page_view
+from studentapp.utils import create_pagination_for_page_view,\
+    get_student_results
 from distutils.util import strtobool
 from studentapp.email import send_password_reset_email
 from flask_uploads import configure_uploads, UploadSet, IMAGES
@@ -433,38 +436,12 @@ def view_student_result():
     term = request.args.get("term")
     student_id = request.args.get("id")
     active_session = Sessions.query.filter_by(current_session=True).first()
-    student_records = \
-        StudentResults.query.filter_by(student_id=student_id,
-                                       term=term,
-                                       sessions_id=active_session.id
-                                       ).order_by(
-                                                  StudentResults.subject_id
-                                                  ).all()
     student = Student.query.get(student_id)
     classroom_id = student.classroom_id
-
-    records = []
-    for record in student_records:
-        record_details = {}
-        subject = Subject.query.get(record.subject_id)
-        record_details["subject_name"] = subject.name
-        record_details["ca_score"] = record.ca_score
-        record_details["exam_score"] = record.exam_score
-        record_details["total"] = record.total_score
-        record_details["grade"] = record.grade
-        record_details["remark"] = record.grade_remark
-        # calculate subject average score
-        avg_score = StudentResults.calculate_subject_average_score_in_class(
-            record.subject_id, classroom_id, term, active_session.id
-        )
-        record_details["average_score"] = avg_score
-        # calculate student score position in subject
-        student_score_pos = StudentResults.calculate_score_position_in_subject(
-            record.subject_id, classroom_id, term, active_session.id,
-            record.total_score
-        )
-        record_details["score_position"] = student_score_pos
-        records.append(record_details)
+    records = get_student_results(
+        student_id, term, active_session.id, classroom_id,
+        StudentResults, Subject
+    )
 
     return render_template("view_student_result.html",
                            title="View Student Result",
@@ -564,3 +541,27 @@ def upload_image():
             db.session.commit()
             flash("Image saved!")
     return redirect(url_for(url_func, id=obj_id))
+
+
+@app.route("/download_report_pdf")
+def download_report_pdf():
+    term = request.args.get("term")
+    student = Student.query.get(request.args.get("student_id"))
+    active_session = request.args.get("active_session")
+    records = get_student_results(
+        student.id, term, active_session,
+        student.classroom_id, StudentResults,
+        Subject
+    )
+    student_report_template = render_template("student_report.html",
+                                              student=student, term=term,
+                                              active_session=active_session,
+                                              records=records)
+
+    student_pdf_report = pdfkit.from_string(student_report_template, False)
+    resp = make_response(student_pdf_report)
+    resp.headers["Content-Type"] = "application/pdf"
+    resp.headers["Content-Disposition"] = f"attachment;filename=\
+        {student.firstname}_{student.surname}_report.pdf"
+
+    return resp

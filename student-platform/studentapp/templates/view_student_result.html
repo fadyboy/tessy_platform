@@ -5,6 +5,7 @@
         <h2 class="title is-2">
             Tessy International School
         </h2>
+        <a href="{{ url_for('download_report_pdf', term=term, student_id=student.id, active_session=active_session.id) }}">Download Report</a>
     </div>
     <div class="subtitle"></div>
     <div class="content-wrapper">
