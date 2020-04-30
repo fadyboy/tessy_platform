@@ -558,7 +558,9 @@ def download_report_pdf():
                                               active_session=active_session,
                                               records=records)
 
-    student_pdf_report = pdfkit.from_string(student_report_template, False)
+    css_file = "studentapp/static/css/bulma.min.css"
+    student_pdf_report = pdfkit.from_string(student_report_template, False,
+                                            css=css_file)
     resp = make_response(student_pdf_report)
     resp.headers["Content-Type"] = "application/pdf"
     resp.headers["Content-Disposition"] = f"attachment;filename=\
