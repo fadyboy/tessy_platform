@@ -18,7 +18,7 @@ from flask_login import current_user, login_user, logout_user, login_required
 from studentapp.utils import create_pagination_for_page_view,\
     get_student_results
 from distutils.util import strtobool
-from studentapp.email import send_password_reset_email
+# from studentapp.email import send_password_reset_email
 from flask_uploads import configure_uploads, UploadSet, IMAGES
 
 
@@ -34,29 +34,29 @@ def index():
     return render_template("index.html", title="Home")
 
 
-@app.route("/login", methods=["GET", "POST"])
-def login():
-    if current_user.is_authenticated:
-        return redirect(url_for("index"))
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
-        if user is None or not user.check_password(form.password.data):
-            flash(f"Invalid username or password provided")
-            return redirect(url_for("login"))
-        # load user
-        login_user(user)
-        next_page = request.args.get("next")
-        if not next_page or url_parse(next_page).netloc == "":
-            next_page = url_for("index")
-        return redirect(next_page)
-    return render_template("login.html", form=form, title="Log In")
+# @app.route("/login", methods=["GET", "POST"])
+# def login():
+#     if current_user.is_authenticated:
+#         return redirect(url_for("index"))
+#     form = LoginForm()
+#     if form.validate_on_submit():
+#         user = User.query.filter_by(username=form.username.data).first()
+#         if user is None or not user.check_password(form.password.data):
+#             flash(f"Invalid username or password provided")
+#             return redirect(url_for("login"))
+#         # load user
+#         login_user(user)
+#         next_page = request.args.get("next")
+#         if not next_page or url_parse(next_page).netloc == "":
+#             next_page = url_for("index")
+#         return redirect(next_page)
+#     return render_template("login.html", form=form, title="Log In")
 
 
-@app.route("/logout")
-def logout():
-    logout_user()
-    return redirect(url_for("index"))
+# @app.route("/logout")
+# def logout():
+#     logout_user()
+#     return redirect(url_for("index"))
 
 
 @app.route("/add_user", methods=["GET", "POST"])
@@ -484,36 +484,36 @@ def set_active_session():
                            title="Set Active Session", form=form)
 
 
-@app.route("/reset_password_request", methods=["GET", "POST"])
-def reset_password_request():
-    if current_user.is_authenticated:
-        return redirect(url_for("index"))
-    form = ResetPasswordRequestForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
-        if user:
-            send_password_reset_email(user)
-        flash("Check your email for instructions to reset your password")
-        return redirect(url_for("login"))
-    return render_template("reset_password_request.html",
-                           title="Reset Password Request", form=form)
+# @app.route("/reset_password_request", methods=["GET", "POST"])
+# def reset_password_request():
+#     if current_user.is_authenticated:
+#         return redirect(url_for("index"))
+#     form = ResetPasswordRequestForm()
+#     if form.validate_on_submit():
+#         user = User.query.filter_by(email=form.email.data).first()
+#         if user:
+#             send_password_reset_email(user)
+#         flash("Check your email for instructions to reset your password")
+#         return redirect(url_for("login"))
+#     return render_template("reset_password_request.html",
+#                            title="Reset Password Request", form=form)
 
 
-@app.route("/reset_password/<token>", methods=["GET", "POST"])
-def reset_password(token):
-    if current_user.is_authenticated:
-        return redirect(url_for("index"))
-    user = User.verify_reset_password_token(token)
-    if not user:
-        return redirect(url_for("index"))
-    form = ResetPasswordForm()
-    if form.validate_on_submit():
-        user.set_password(form.password.data)
-        db.session.commit()
-        flash("Your password has be reset")
-        return redirect(url_for("login"))
-    return render_template("reset_password.html", form=form,
-                           title="Reset Password")
+# @app.route("/reset_password/<token>", methods=["GET", "POST"])
+# def reset_password(token):
+#     if current_user.is_authenticated:
+#         return redirect(url_for("index"))
+#     user = User.verify_reset_password_token(token)
+#     if not user:
+#         return redirect(url_for("index"))
+#     form = ResetPasswordForm()
+#     if form.validate_on_submit():
+#         user.set_password(form.password.data)
+#         db.session.commit()
+#         flash("Your password has be reset")
+#         return redirect(url_for("login"))
+#     return render_template("reset_password.html", form=form,
+#                            title="Reset Password")
 
 
 @app.route("/upload_image", methods=["GET", "POST"])

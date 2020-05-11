@@ -21,9 +21,9 @@
             <div class="navbar-end">
                 <a href="{{ url_for('index') }}" class="navbar-item">Home</a>
                 {% if current_user.is_anonymous %}
-                <a href="{{ url_for('login') }}" class="navbar-item">Login</a>
+                <a href="{{ url_for('auth.login') }}" class="navbar-item">Login</a>
                 {% elif current_user.is_authenticated and current_user.role.name == "User" %}
-                <a href="{{ url_for('logout') }}" class="navbar-item">Logout</a>
+                <a href="{{ url_for('auth.logout') }}" class="navbar-item">Logout</a>
                 {% elif current_user.is_authenticated and current_user.role.name == "Admin" %}
                 <div class="navbar-item has-dropdown is-hoverable">
                     <a class="navbar-link">Admin</a>
@@ -37,7 +37,7 @@
                         <a class="navbar-item" href="{{ url_for('add_session') }}">Add School Session</a>
                     </div>
                 </div>
-                <a href="{{ url_for('logout') }}" class="navbar-item">Logout</a>
+                <a href="{{ url_for('auth.logout') }}" class="navbar-item">Logout</a>
                 {% endif %}
             </div>
         </div>

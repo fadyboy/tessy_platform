@@ -14,8 +14,17 @@ app.config.from_object(Config)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 login = LoginManager(app)
-login.login_view = "login"
+login.login_view = "auth.login"
 mail = Mail(app)
+
+# Register blueprints
+from studentapp.errors import bp as errors_bp
+from studentapp.auth import bp as auth_bp
+from studentapp.main import bp as main_bp
+
+app.register_blueprint(errors_bp)
+app.register_blueprint(auth_bp, url_prefix="/auth")
+app.register_blueprint(main_bp)
 
 if not app.debug:
     if app.config["MAIL_SERVER"]:
@@ -50,4 +59,4 @@ if not app.debug:
     app.logger.setLevel(logging.INFO)
     app.logger.info("StudentApp startup")
 
-from studentapp import routes, models, errors
+from studentapp import routes, models
