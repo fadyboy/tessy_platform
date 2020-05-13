@@ -22,7 +22,7 @@
                             <td class="has-text-centered">{{ student.firstname }} {{ student.surname }}</td>
                             <td class="has-text-centered">{{ student.gender }}</td>
                             <td class="has-text-centered">{{ student.display_classroom_symbol() }}</td>
-                            <td class="has-text-centered"><a href="{{ url_for('student', id=student.id) }}">View</a></td>
+                            <td class="has-text-centered"><a href="{{ url_for('main.student', id=student.id) }}">View</a></td>
                         </tr>
                     {% endfor %}
                 </table>

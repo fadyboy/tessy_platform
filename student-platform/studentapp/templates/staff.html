@@ -15,7 +15,7 @@
                     <img src="{{ staff.get_person_avatar(size=80) }}" />
                     {% endif %}
                     <div class="subtitle"></div>
-                    <form action="{{url_for('upload_image', id=staff.id, obj_type='Staff') }}" method="POST" enctype="multipart/form-data">
+                    <form action="{{url_for('main.upload_image', id=staff.id, obj_type='Staff') }}" method="POST" enctype="multipart/form-data">
                         {{ form.hidden_tag() }}
                         <div class="file is-small">
                             <label class="file-label">
@@ -58,7 +58,7 @@
                 <p class="subtitle is-6">
                     <span class="has-text-weight-bold">Address:</span> {{ staff.address }}
                 </p>
-                <a class="button is-info" href="{{ url_for('edit_staff', id=staff.id) }}">Edit Staff</a>
+                <a class="button is-info" href="{{ url_for('main.edit_staff', id=staff.id) }}">Edit Staff</a>
             </div>
         </div>
     </div>

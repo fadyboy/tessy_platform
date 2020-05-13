@@ -16,10 +16,10 @@
     <nav class="bd-navbar navbar has-shadow is-spaced">
         <div class="container">
             <div class="navbar-brand">
-                <a href="{{ url_for('index') }}"><img class="image is-96x96" src="{{ url_for('static', filename='images/tessy_badge.jpg') }}"></a>
+                <a href="{{ url_for('main.index') }}"><img class="image is-96x96" src="{{ url_for('static', filename='images/tessy_badge.jpg') }}"></a>
             </div>
             <div class="navbar-end">
-                <a href="{{ url_for('index') }}" class="navbar-item">Home</a>
+                <a href="{{ url_for('main.index') }}" class="navbar-item">Home</a>
                 {% if current_user.is_anonymous %}
                 <a href="{{ url_for('auth.login') }}" class="navbar-item">Login</a>
                 {% elif current_user.is_authenticated and current_user.role.name == "User" %}
@@ -28,13 +28,13 @@
                 <div class="navbar-item has-dropdown is-hoverable">
                     <a class="navbar-link">Admin</a>
                     <div class="navbar-dropdown">
-                        <a class="navbar-item" href="{{ url_for('add_user') }}">Add User</a>
-                        <a class="navbar-item" href="{{ url_for('add_staff') }}">Add Staff</a>
-                        <a class="navbar-item" href="{{ url_for('add_student') }}">Add Student</a>
-                        <a class="navbar-item" href="{{ url_for('add_classroom') }}">Add Classroom</a>
-                        <a class="navbar-item" href="{{ url_for('add_subject') }}">Add Subject</a>
-                        <a class="navbar-item" href="{{ url_for('select_score_options') }}">Enter Student Scores</a>
-                        <a class="navbar-item" href="{{ url_for('add_session') }}">Add School Session</a>
+                        <a class="navbar-item" href="{{ url_for('main.add_user') }}">Add User</a>
+                        <a class="navbar-item" href="{{ url_for('main.add_staff') }}">Add Staff</a>
+                        <a class="navbar-item" href="{{ url_for('main.add_student') }}">Add Student</a>
+                        <a class="navbar-item" href="{{ url_for('main.add_classroom') }}">Add Classroom</a>
+                        <a class="navbar-item" href="{{ url_for('main.add_subject') }}">Add Subject</a>
+                        <a class="navbar-item" href="{{ url_for('main.select_score_options') }}">Enter Student Scores</a>
+                        <a class="navbar-item" href="{{ url_for('main.add_session') }}">Add School Session</a>
                     </div>
                 </div>
                 <a href="{{ url_for('auth.logout') }}" class="navbar-item">Logout</a>

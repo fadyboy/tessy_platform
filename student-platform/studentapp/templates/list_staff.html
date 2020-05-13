@@ -26,7 +26,7 @@
                             <td class="has-text-centered">{{ user.gender }}</td>
                             <td class="has-text-centered">{{ user.contact_number }}</td>
                             <td class="has-text-centered">{{ user.email }}</td>
-                            <td class="has-text-centered"><a href="{{ url_for('staff', id=user.id) }}">View</a></td>
+                            <td class="has-text-centered"><a href="{{ url_for('main.staff', id=user.id) }}">View</a></td>
                         </tr>
                     {% endfor %}
                 </table>
