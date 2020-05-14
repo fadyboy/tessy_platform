@@ -1,8 +1,8 @@
 import pdfkit
 from flask import render_template, redirect, request, flash,\
-                  url_for, make_response
-from werkzeug.urls import url_parse
-from studentapp import app, db
+                  url_for, make_response, current_app
+
+from studentapp import db
 from studentapp.main.forms import (
     AddUserForm, EditUserForm, AddStaffForm, EditStaffForm,
     AddStudentForm, EditStudentForm, AddSubjectForm, EditSubjectForm,
@@ -24,7 +24,7 @@ from flask_login import login_required
 
 # settings for uplading images
 images = UploadSet("images", IMAGES)
-configure_uploads(app, images)
+configure_uploads(current_app, images)
 
 
 @bp.route("/")

@@ -1,10 +1,11 @@
 import jwt
 import inflect
-from studentapp import db, login, app
+from studentapp import db, login
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
 from studentapp.utils import avatar
 from time import time
+from flask import current_app
 
 
 class User(db.Model, UserMixin):
@@ -37,7 +38,7 @@ class User(db.Model, UserMixin):
                 "reset_password": self.id,
                 "exp": time() + expires_in
             },
-            app.config["SECRET_KEY"],
+            current_app.config["SECRET_KEY"],
             algorithm="HS256"
         ).decode("UTF-8")
 
@@ -46,7 +47,7 @@ class User(db.Model, UserMixin):
         try:
             id = jwt.decode(
                 token,
-                app.config["SECRET_KEY"],
+                current_app.config["SECRET_KEY"],
                 algorithms=["HS256"]
             )["reset_password"]
         except Exception:
