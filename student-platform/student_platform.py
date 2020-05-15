@@ -1,6 +1,6 @@
 from studentapp import create_app, db
-from studentapp.models import User, Staff, Student, Classroom, Role, Subject,\
-    Sessions, StudentResults
+from studentapp.models import (User, Staff, Student, Classroom, Role, Subject,
+                               Sessions, StudentResults)
 
 app = create_app()
 
