@@ -16,7 +16,7 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
-        if user is None and user.check_password(form.password.data):
+        if user is None or not user.check_password(form.password.data):
             flash("Invalid username or password provided")
             return redirect(url_for("auth.login"))  # login function
         # load user
@@ -31,7 +31,7 @@ def login():
 @bp.route("/logout")
 def logout():
     logout_user()
-    return redirect(url_for("main.index"))
+    return redirect(url_for("auth.login"))
 
 
 @bp.route("/reset_password_request", methods=["GET", "POST"])
