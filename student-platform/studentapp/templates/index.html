@@ -4,5 +4,57 @@
     {% if current_user.is_authenticated %}
         <p>Welcome {{ current_user.username }}</p>
     {% endif %}
+    <div class="subtitle"></div>
+    <div class="tile">
+        <canvas id="chart1" width="600" height="400"></canvas>
+    </div>
+    <script>
+        Chart.defaults.global.responsive = false;
+
+        let chart1 = document.getElementById("chart1").getContext("2d");
+        let studentChart1 = new Chart(
+            chart1,
+            {
+                type: "bar",
+                data: {
+                    labels: ["Male", "Female"],
+                    datasets: [{
+                        label: "Student Population",
+                        data: [
+                            85,
+                            67
+                        ],
+                        backgroundColor: [
+                            "rgba(54, 162, 235, 0.6)",
+                            "rgba(255, 99, 132, 0.6)"
+                        ]
+                    }]
+                },
+                options: {
+                    title: {
+                        display: true,
+                        text: "Student Population Distribution",
+                        fontSize: 20
+                    },
+                    scales: {
+                        yAxes: [{
+                            ticks: {
+                                beginAtZero: true,
+                                stepSize: 5
+                            }
+                        }]
+                    },
+                    legend: {
+                        display: true,
+                        position: "bottom",
+                        labels: {
+                            fontColor: "#000",
+                            backgroundColor: "rgb(0, 0, 102)"
+                        }
+                    }
+                }
+            }
+        )
+    </script>
 
 {% endblock %}
