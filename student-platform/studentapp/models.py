@@ -103,6 +103,12 @@ class Student(Person):
         classroom = Classroom.query.get(self.classroom_id)
         return classroom.total_students_in_classroom()
 
+    @staticmethod
+    def get_total_students_by_gender(gender):
+        students = db.session.query(db.func.count(Student.gender))\
+                   .filter_by(gender=gender).all()
+        return students[0][0]
+
 
 class Classroom(db.Model):
     __tablename__ = "classroom"

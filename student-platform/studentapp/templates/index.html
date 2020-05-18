@@ -21,8 +21,8 @@
                     datasets: [{
                         label: "Student Population",
                         data: [
-                            85,
-                            67
+                            '{{ student_totals.male }}',
+                            '{{ student_totals.female }}'
                         ],
                         backgroundColor: [
                             "rgba(54, 162, 235, 0.6)",
@@ -48,8 +48,7 @@
                         display: true,
                         position: "bottom",
                         labels: {
-                            fontColor: "#000",
-                            backgroundColor: "rgb(0, 0, 102)"
+                            fontColor: "#000"
                         }
                     }
                 }

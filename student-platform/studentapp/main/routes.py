@@ -31,7 +31,13 @@ configure_uploads(current_app, images)
 @bp.route("/index")
 @login_required
 def index():
-    return render_template("index.html", title="Home")
+    total_male_students = Student.get_total_students_by_gender("Male")
+    total_female_students = Student.get_total_students_by_gender("Female")
+    student_totals = dict(male=total_male_students,
+                          female=total_female_students)
+
+    return render_template("index.html", title="Home",
+                           student_totals=student_totals)
 
 
 @bp.route("/add_user", methods=["GET", "POST"])
