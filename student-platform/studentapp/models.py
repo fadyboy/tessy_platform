@@ -109,6 +109,12 @@ class Student(Person):
                    .filter_by(gender=gender).all()
         return students[0][0]
 
+    @staticmethod
+    def get_gender_total_in_class(gender, class_id):
+        students = db.session.query(db.func.count(Student.gender))\
+                   .filter_by(gender=gender, classroom_id=class_id).all()
+        return students[0][0]
+
 
 class Classroom(db.Model):
     __tablename__ = "classroom"
@@ -124,6 +130,10 @@ class Classroom(db.Model):
         students_list = [student for student in self.students]
         total_students = len(students_list)
         return total_students
+
+    @staticmethod
+    def list_classrooms():
+        return Classroom.query.order_by(Classroom.classroom_symbol).all()
 
 
 class Role(db.Model):

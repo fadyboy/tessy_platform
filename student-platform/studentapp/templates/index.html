@@ -5,13 +5,20 @@
         <p>Welcome {{ current_user.username }}</p>
     {% endif %}
     <div class="subtitle"></div>
-    <div class="tile">
-        <canvas id="chart1" width="600" height="400"></canvas>
+    <div class="tile is-ancestor">
+        <div class="tile">
+            <canvas id="chart1" width="600" height="400"></canvas>
+        </div>
+        <div class="tile">
+            <canvas id="chart2" width="600" height="400"></canvas>
+        </div>
     </div>
+    
     <script>
         Chart.defaults.global.responsive = false;
 
         let chart1 = document.getElementById("chart1").getContext("2d");
+        let chart2 = document.getElementById("chart2").getContext("2d");
         let studentChart1 = new Chart(
             chart1,
             {
@@ -19,7 +26,7 @@
                 data: {
                     labels: ["Male", "Female"],
                     datasets: [{
-                        label: "Student Population",
+                        label: "Students",
                         data: [
                             '{{ student_totals.male }}',
                             '{{ student_totals.female }}'
@@ -33,7 +40,7 @@
                 options: {
                     title: {
                         display: true,
-                        text: "Student Population Distribution",
+                        text: "Student Population - {{ student_totals.total }}",
                         fontSize: 20
                     },
                     scales: {
@@ -50,6 +57,65 @@
                         labels: {
                             fontColor: "#000"
                         }
+                    }
+                }
+            }
+        );
+        // second chart
+        let studentChart2 = new Chart(
+            chart2,
+            {
+                type: "bar",
+                data: {
+                    labels: [{% for sym in classroom_list %}
+                             "{{ sym.classroom_symbol }}",
+                             {% endfor %}
+                    ],
+                    datasets: [
+                        {
+                            label: "Male",
+                            backgroundColor: "rgba(54, 162, 235, 0.6)",
+                            data: [{% for value in gender_dist_list %}
+                                    "{{ value.male }}",
+                                    {% endfor %}
+                            ]
+                        },
+                        {
+                            label: "Female",
+                            backgroundColor: "rgba(255, 99, 132, 0.6)",
+                            data: [{% for value in gender_dist_list %} 
+                                    "{{ value.female }}",
+                                    {% endfor %}
+                            ]
+                        }
+                    ]
+                },
+                options: {
+                    title: {
+                        display: true,
+                        text: "Student Gender Distribution by Class",
+                        fontSize: 20
+                    },
+                    tooltips: {
+                        displayColors: true,
+                        callbacks: {
+                            mode: "x"
+                        }
+                    },
+                    scales: {
+                        xAxes: [{
+                            stacked: true
+                        }],
+                        yAxes: [{
+                            stacked: true,
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }]
+                    },
+                    legend: {
+                        display: true,
+                        position: "bottom"
                     }
                 }
             }

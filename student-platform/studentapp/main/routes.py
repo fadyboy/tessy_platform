@@ -33,11 +33,31 @@ configure_uploads(current_app, images)
 def index():
     total_male_students = Student.get_total_students_by_gender("Male")
     total_female_students = Student.get_total_students_by_gender("Female")
+    total_students = total_male_students + total_female_students
     student_totals = dict(male=total_male_students,
-                          female=total_female_students)
+                          female=total_female_students,
+                          total=total_students)
+    list_of_classrooms = Classroom.list_classrooms()
+    gender_dist_by_class = []
+    for classroom in list_of_classrooms:
+        gender_dist_by_class_obj = {}
+        gender_dist_by_class_obj["class_id"] = classroom.id
+        gender_dist_by_class_obj["male"] = Student.\
+            get_gender_total_in_class(
+                                      "Male",
+                                      classroom.id
+                                        )
+        gender_dist_by_class_obj["female"] = Student.\
+            get_gender_total_in_class(
+                                      "Female",
+                                      classroom.id
+                                        )
+        gender_dist_by_class.append(gender_dist_by_class_obj)
 
     return render_template("index.html", title="Home",
-                           student_totals=student_totals)
+                           student_totals=student_totals,
+                           gender_dist_list=gender_dist_by_class,
+                           classroom_list=list_of_classrooms)
 
 
 @bp.route("/add_user", methods=["GET", "POST"])
