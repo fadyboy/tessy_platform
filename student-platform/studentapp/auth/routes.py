@@ -1,5 +1,5 @@
 from studentapp.auth import bp
-from flask import render_template, redirect, flash, url_for, request
+from flask import render_template, redirect, flash, url_for, request, session
 from flask_login import current_user, login_user, logout_user
 from studentapp.auth.forms import LoginForm, ResetPasswordRequestForm,\
      ResetPasswordForm
@@ -19,7 +19,8 @@ def login():
         if user is None or not user.check_password(form.password.data):
             flash("Invalid username or password provided")
             return redirect(url_for("auth.login"))  # login function
-        # load user
+        # load user and update session with user role
+        session["user_role"] = user.role.name
         login_user(user)
         next_page = request.args.get("next")
         if not next_page or url_parse(next_page).netloc == "":
@@ -31,6 +32,7 @@ def login():
 @bp.route("/logout")
 def logout():
     logout_user()
+    session.pop("user_role", None)  # remove the user role on logout
     return redirect(url_for("auth.login"))
 
 

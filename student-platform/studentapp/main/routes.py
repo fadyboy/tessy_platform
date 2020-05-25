@@ -1,6 +1,6 @@
 import pdfkit
-from flask import render_template, redirect, request, flash,\
-                  url_for, make_response, current_app
+from flask import (render_template, redirect, request, flash,
+                   url_for, make_response, current_app)
 
 from studentapp import db
 from studentapp.main.forms import (
@@ -15,12 +15,12 @@ from studentapp.models import (
     StudentResults
 )
 from distutils.util import strtobool
-from studentapp.utils import create_pagination_for_page_view, \
-    get_student_results
+from studentapp.utils import (create_pagination_for_page_view,
+                              get_student_results)
 from flask_uploads import configure_uploads, UploadSet, IMAGES
 from studentapp.main import bp
 from flask_login import login_required
-
+from .decorators import route_level_access
 
 # settings for uplading images
 images = UploadSet("images", IMAGES)
@@ -42,16 +42,16 @@ def index():
     for classroom in list_of_classrooms:
         gender_dist_by_class_obj = {}
         gender_dist_by_class_obj["class_id"] = classroom.id
-        gender_dist_by_class_obj["male"] = Student.\
+        gender_dist_by_class_obj["male"] = Student. \
             get_gender_total_in_class(
-                                      "Male",
-                                      classroom.id
-                                        )
-        gender_dist_by_class_obj["female"] = Student.\
+            "Male",
+            classroom.id
+        )
+        gender_dist_by_class_obj["female"] = Student. \
             get_gender_total_in_class(
-                                      "Female",
-                                      classroom.id
-                                        )
+            "Female",
+            classroom.id
+        )
         gender_dist_by_class.append(gender_dist_by_class_obj)
 
     return render_template("index.html", title="Home",
@@ -62,6 +62,7 @@ def index():
 
 @bp.route("/add_user", methods=["GET", "POST"])
 @login_required
+@route_level_access(["Admin"])
 def add_user():
     form = AddUserForm()
     if form.validate_on_submit():
@@ -77,6 +78,7 @@ def add_user():
 
 @bp.route("/add_staff", methods=["GET", "POST"])
 @login_required
+@route_level_access(["Admin"])
 def add_staff():
     form = AddStaffForm()
     if form.validate_on_submit():
@@ -101,6 +103,7 @@ def add_staff():
 
 @bp.route("/add_student", methods=["GET", "POST"])
 @login_required
+@route_level_access(["Admin"])
 def add_student():
     form = AddStudentForm()
     if form.validate_on_submit():
@@ -129,6 +132,7 @@ def add_student():
 
 @bp.route("/add_classroom", methods=["GET", "POST"])
 @login_required
+@route_level_access(["Admin"])
 def add_classroom():
     form = AddClassroomForm()
     if form.validate_on_submit():
@@ -146,6 +150,7 @@ def add_classroom():
 
 @bp.route("/add_subject", methods=["GET", "POST"])
 @login_required
+@route_level_access(["Admin"])
 def add_subject():
     form = AddSubjectForm()
     if form.validate_on_submit():
@@ -163,6 +168,7 @@ def add_subject():
 
 @bp.route("/add_session", methods=["GET", "POST"])
 @login_required
+@route_level_access(["Admin"])
 def add_session():
     form = AddSessionForm()
     if form.validate_on_submit():
@@ -259,6 +265,7 @@ def student(id):
 
 @bp.route("/edit_user/<id>", methods=["GET", "POST"])
 @login_required
+@route_level_access(["Admin"])
 def edit_user(id):
     user = User.query.get(id)
     form = EditUserForm(
@@ -282,6 +289,7 @@ def edit_user(id):
 
 @bp.route("/edit_staff/<id>", methods=["GET", "POST"])
 @login_required
+@route_level_access(["Admin"])
 def edit_staff(id):
     staff = Staff.query.get(id)
     form = EditStaffForm(
@@ -310,6 +318,7 @@ def edit_staff(id):
 
 @bp.route("/edit_student/<id>", methods=["GET", "POST"])
 @login_required
+@route_level_access(["Admin"])
 def edit_student(id):
     student = Student.query.get(id)
     # get classroom object to pre-populate classroom selection
@@ -343,6 +352,7 @@ def edit_student(id):
 
 @bp.route("/edit_subject/<id>", methods=["GET", "POST"])
 @login_required
+@route_level_access(["Admin"])
 def edit_subject(id):
     subject = Subject.query.get(id)
     form = EditSubjectForm(
@@ -361,6 +371,7 @@ def edit_subject(id):
 
 @bp.route("/edit_classroom/<id>", methods=["GET", "POST"])
 @login_required
+@route_level_access(["Admin"])
 def edit_classroom(id):
     classroom = Classroom.query.get(id)
     form = EditClassroomForm(
@@ -401,8 +412,8 @@ def submit_student_scores():
     subject = Subject.query.filter_by(name=subject_name).first()
     classroom_sym = request.args.get("classroom").split(":")[1].strip()
     classroom = Classroom.query.filter_by(
-                                          classroom_symbol=classroom_sym
-                                          ).first()
+        classroom_symbol=classroom_sym
+    ).first()
     term = request.args.get("term")
     students_query = Student.query.filter_by(classroom_id=classroom.id).all()
     students_list = []
@@ -477,6 +488,7 @@ def view_student_result():
 
 @bp.route("/set_active_session", methods=["GET", "POST"])
 @login_required
+@route_level_access(["Admin"])
 def set_active_session():
     form = SetActiveSessionForm()
     if form.validate_on_submit():
