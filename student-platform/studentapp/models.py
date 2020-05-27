@@ -6,6 +6,7 @@ from flask_login import UserMixin
 from studentapp.utils import avatar
 from time import time
 from flask import current_app
+from datetime import datetime
 
 
 class User(db.Model, UserMixin):
@@ -78,6 +79,11 @@ class Person(db.Model):
     def format_birthday(self):
         formatted_birthday = self.birthday.strftime("%d %B %Y")
         return formatted_birthday
+
+    def calculate_age(self):
+        current_date = datetime.now().utcnow()
+        age_in_days = abs(current_date - self.birthday)
+        return int(age_in_days.days / 365)
 
     # TODO: functionality for default pic
     # remove image
