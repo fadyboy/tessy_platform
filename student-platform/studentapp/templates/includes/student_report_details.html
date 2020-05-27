@@ -1,0 +1,22 @@
+<table class="table is-bordered is-fullwidth">
+        <thead>
+            <th class="has-text-centered">Student Name</th>
+            <th class="has-text-centered">Admission Number</th>
+            <th class="has-text-centered">Gender</th>
+            <th class="has-text-centered">Age</th>
+            <th class="has-text-centered">Class</th>
+            <th class="has-text-centered">Term</th>
+            <th class="has-text-centered">Session</th>
+            <th class="has-text-centered">Total in Class</th>
+        </thead>
+        <tr>
+            <td class="has-text-centered">{{ student.firstname }} {{ student.surname }}</td>
+            <td class="has-text-centered">{{ student.serial_number }}</td>
+            <td class="has-text-centered">{{ student.gender }}</td>
+            <td class="has-text-centered">{{ student.calculate_age() }} yrs</td>
+            <td class="has-text-centered">{{ student.display_classroom_symbol() }}</td>
+            <td class="has-text-centered">{{ term }}</td>
+            <td class="has-text-centered">{{ active_session.session }}</td>
+            <td class="has-text-centered">{{ student.get_total_students_in_class() }}</td>
+        </tr>
+</table>

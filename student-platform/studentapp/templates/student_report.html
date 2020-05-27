@@ -14,52 +14,8 @@
         <div class="content-wrapper">
             <div class="columns is-centered">
                 <div class="column is-four-fiths">
-                    <table class="table is-bordered is-fullwidth">
-                        <thead>
-                            <th class="has-text-centered">Student Name</th>
-                            <th class="has-text-centered">Admission Number</th>
-                            <th class="has-text-centered">Gender</th>
-                            <th class="has-text-centered">Age</th>
-                            <th class="has-text-centered">Class</th>
-                            <th class="has-text-centered">Term</th>
-                            <th class="has-text-centered">Session</th>
-                            <th class="has-text-centered">Total in Class</th>
-                        </thead>
-                        <tr>
-                            <td class="has-text-centered">{{ student.firstname }} {{ student.surname }}</td>
-                            <td class="has-text-centered">{{ student.serial_number }}</td>
-                            <td class="has-text-centered">{{ student.gender }}</td>
-                            <td class="has-text-centered">{{ student.calculate_age() yrs }}</td>
-                            <td class="has-text-centered">{{ student.display_classroom_symbol() }}</td>
-                            <td class="has-text-centered">{{ term }}</td>
-                            <td class="has-text-centered">{{ active_session }}</td>
-                            <td class="has-text-centered">{{ student.get_total_students_in_class() }}</td>
-                        </tr>
-                    </table>
-                    <table class="table is-bordered is-fullwidth">
-                        <thead>
-                            <th class="has-text-centered">Subject</th>
-                            <th class="has-text-centered">CA Score(50%)</th>
-                            <th class="has-text-centered">Exam Score(50%)</th>
-                            <th class="has-text-centered">Total</th>
-                            <th class="has-text-centered">Grade</th>
-                            <th class="has-text-centered">Remarks</th>
-                            <th class="has-text-centered">Average Score</th>
-                            <th class="has-text-centered">Position</th>
-                        </thead>
-                        {% for record in records %}
-                        <tr>
-                            <td class="has-text-centered">{{ record.subject_name }}</td>
-                            <td class="has-text-centered">{{ record.ca_score }}</td>
-                            <td class="has-text-centered">{{ record.exam_score }}</td>
-                            <td class="has-text-centered">{{ record.total }}</td>
-                            <td class="has-text-centered">{{ record.grade }}</td>
-                            <td class="has-text-centered">{{ record.remark }}</td>
-                            <td class="has-text-centered">{{ record.average_score }}</td>
-                            <td class="has-text-centered">{{ record.score_position }}</td>
-                        </tr>
-                        {% endfor %}
-                    </table>
+                    {% include "includes/student_report_details.html" %}
+                    {% include "includes/student_report_records.html" %}
                 </div>
             </div>
         </div>
