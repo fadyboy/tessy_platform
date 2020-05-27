@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bulma.min.css')}}">
     <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.6.0/Chart.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link type="text/css" rel="stylesheet" href="{{url_for('static', filename='css/main.css')}}">
 </head>
 <body>
@@ -61,8 +62,11 @@
     </div>
     <footer class="footer">
         <div class="container">
-            &COPY;Tessy International School, 2020
+            &COPY;Tessy International Secondary School &nbsp;&SmallCircle; &nbsp;{{ moment().format("YYYY") }}
         </div>
     </footer>
+    {% block scripts %}
+        {{ moment.include_moment() }}
+    {% endblock %}
 </body>
 </html>
