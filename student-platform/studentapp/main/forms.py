@@ -281,3 +281,10 @@ class UploadImageForm(FlaskForm):
         validators=[FileRequired(message="Please upload a valid image")]
     )
     submit = SubmitField("Save Image")
+
+
+class BulkUploadForm(FlaskForm):
+    bulk_upload_file = FileField(
+        validators=[FileRequired(message="Please upload a valid file")]
+    )
+    submit = SubmitField("Upload")

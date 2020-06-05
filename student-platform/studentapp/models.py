@@ -141,6 +141,11 @@ class Classroom(db.Model):
     def list_classrooms():
         return Classroom.query.order_by(Classroom.classroom_symbol).all()
 
+    @staticmethod
+    def get_classroom_id_from_symbol(classroom_symbol):
+        classroom = Classroom.query.filter_by(classroom_symbol=classroom_symbol).first()
+        return classroom.id
+
 
 class Role(db.Model):
     __tablename__ = "roles"

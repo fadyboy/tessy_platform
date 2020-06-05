@@ -25,3 +25,8 @@ class Config:
     UPLOADED_IMAGES_DEST = os.path.join(
         basedir, "studentapp/static/images/profile_pics"
         )
+
+    # folder for bulk file uploads
+    UPLOADED_DATA_DEST = os.path.join(
+        basedir, "studentapp/static/data"
+    )
