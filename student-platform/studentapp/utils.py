@@ -1,6 +1,7 @@
 from hashlib import md5
 from flask import request, url_for
 from flask import current_app
+from datetime import datetime
 
 
 def avatar(email, size):
@@ -54,3 +55,8 @@ def get_student_results(student_id, term, session_id, classroom_id,
         record_details["score_position"] = score_pos
         records.append(record_details)
     return records
+
+
+def create_datetime_from_str(date_string):
+    """ Helper method to convert a date string to a python date object """
+    return datetime.strptime(date_string, "%Y-%m-%d")

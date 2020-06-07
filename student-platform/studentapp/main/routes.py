@@ -18,7 +18,7 @@ from studentapp.models import (
 )
 from distutils.util import strtobool
 from studentapp.utils import (create_pagination_for_page_view,
-                              get_student_results)
+                              get_student_results, create_datetime_from_str)
 from flask_uploads import configure_uploads, UploadSet, IMAGES, DATA
 from studentapp.main import bp
 from flask_login import login_required
@@ -566,31 +566,53 @@ def bulk_upload():
     - upload file
     """
     form = BulkUploadForm()
-    if request.method == "POST":
+    if form.validate_on_submit():
         bulk_upload_file = request.files["bulk_upload_file"]
-        # with open(bulk_upload_file.stream, "r") as bulk_file:
+        object_type = form.upload_object.data
         data_stream = StringIO(bulk_upload_file.stream.read().decode("UTF-8"), newline=None)
         bulk_data = csv.reader(data_stream)
         next(bulk_data)  # skip header row
         bulk_upload_objects = []
-        for row in bulk_data:
-            print(f"row - {row}")
-            record = Student(
-                serial_number=row[0],
-                firstname=row[1],
-                middlename=row[2],
-                surname=row[3],
-                gender=row[4],
-                birthday=row[5],
-                contact_number=row[6],
-                email=row[7],
-                parent_guardian_name=row[8],
-                address=row[9],
-                classroom_id=Classroom.get_classroom_id_from_symbol(row[10])
-            )
-            bulk_upload_objects.append(record)
+        if object_type == "Student":
+            for row in bulk_data:
+                record = Student(
+                    serial_number=row[0],
+                    firstname=row[1],
+                    middlename=row[2],
+                    surname=row[3],
+                    gender=row[4],
+                    birthday=create_datetime_from_str(row[5]),
+                    contact_number=row[6],
+                    email=row[7],
+                    parent_guardian_name=row[8],
+                    address=row[9],
+                    classroom_id=Classroom.get_classroom_id_from_symbol(row[10])
+                )
+                bulk_upload_objects.append(record)
             print(f"len - {len(bulk_upload_objects)}")
             print(f"objs - {bulk_upload_objects}")
+            db.session.add_all(bulk_upload_objects)
+            db.session.commit()
+            return redirect(url_for("main.bulk_upload"))
+        elif object_type == "Staff":
+            for row in bulk_data:
+                record = Staff(
+                    serial_number=row[0],
+                    firstname=row[1],
+                    middlename=row[2],
+                    surname=row[3],
+                    gender=row[4],
+                    birthday=create_datetime_from_str(row[5]),
+                    contact_number=row[6],
+                    email=row[7],
+                    address=row[8]
+                )
+                bulk_upload_objects.append(record)
+            print(f"len - {len(bulk_upload_objects)}")
+            print(f"objs - {bulk_upload_objects}")
+            db.session.add_all(bulk_upload_objects)
+            db.session.commit()
+            return redirect(url_for("main.bulk_upload"))
 
     return render_template("bulk_upload.html", title="Bulk Uploads", form=form)
 

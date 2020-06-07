@@ -284,6 +284,10 @@ class UploadImageForm(FlaskForm):
 
 
 class BulkUploadForm(FlaskForm):
+    upload_object = SelectField(
+        validators=[DataRequired(message="Please select Student or staff")],
+        choices=[("", "Upload Type"), ("Student", "Student"), ("Staff", "Staff")]
+    )
     bulk_upload_file = FileField(
         validators=[FileRequired(message="Please upload a valid file")]
     )
