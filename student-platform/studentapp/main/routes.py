@@ -574,6 +574,7 @@ def bulk_upload():
             data_stream = StringIO(bulk_upload_file.stream.read().decode("UTF-8"), newline=None)
         except UnicodeDecodeError:
             flash("Unable to read csv file, please ensure you have the right file type")
+            return redirect(url_for("main.bulk_upload"))  # return user to bulk upload form
         bulk_data = csv.reader(data_stream)
         next(bulk_data)  # skip header row
         bulk_upload_objects = []
