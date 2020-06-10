@@ -569,48 +569,59 @@ def bulk_upload():
     if form.validate_on_submit():
         bulk_upload_file = request.files["bulk_upload_file"]
         object_type = form.upload_object.data
-        data_stream = StringIO(bulk_upload_file.stream.read().decode("UTF-8"), newline=None)
+        # catch error if file is not csv file
+        try:
+            data_stream = StringIO(bulk_upload_file.stream.read().decode("UTF-8"), newline=None)
+        except UnicodeDecodeError:
+            flash("Unable to read csv file, please ensure you have the right file type")
         bulk_data = csv.reader(data_stream)
         next(bulk_data)  # skip header row
         bulk_upload_objects = []
         if object_type == "Student":
             for row in bulk_data:
-                record = Student(
-                    serial_number=row[0],
-                    firstname=row[1],
-                    middlename=row[2],
-                    surname=row[3],
-                    gender=row[4],
-                    birthday=create_datetime_from_str(row[5]),
-                    contact_number=row[6],
-                    email=row[7],
-                    parent_guardian_name=row[8],
-                    address=row[9],
-                    classroom_id=Classroom.get_classroom_id_from_symbol(row[10])
-                )
-                bulk_upload_objects.append(record)
-            print(f"len - {len(bulk_upload_objects)}")
-            print(f"objs - {bulk_upload_objects}")
-            db.session.add_all(bulk_upload_objects)
+                try:
+                    record = Student(
+                        serial_number=row[0],
+                        firstname=row[1],
+                        middlename=row[2],
+                        surname=row[3],
+                        gender=row[4],
+                        birthday=create_datetime_from_str(row[5]),
+                        contact_number=row[6],
+                        email=row[7],
+                        parent_guardian_name=row[8],
+                        address=row[9],
+                        classroom_id=Classroom.get_classroom_id_from_symbol(row[10])
+                    )
+                    bulk_upload_objects.append(record)
+                except (TypeError, ValueError) as e:
+                    flash(f"Error: Incorrect field name or field type in record - {row}")
+                    print(f"Error - {e}")
+                    continue
+
+            db.session.bulk_save_objects(bulk_upload_objects)
             db.session.commit()
             return redirect(url_for("main.bulk_upload"))
         elif object_type == "Staff":
             for row in bulk_data:
-                record = Staff(
-                    serial_number=row[0],
-                    firstname=row[1],
-                    middlename=row[2],
-                    surname=row[3],
-                    gender=row[4],
-                    birthday=create_datetime_from_str(row[5]),
-                    contact_number=row[6],
-                    email=row[7],
-                    address=row[8]
-                )
-                bulk_upload_objects.append(record)
-            print(f"len - {len(bulk_upload_objects)}")
-            print(f"objs - {bulk_upload_objects}")
-            db.session.add_all(bulk_upload_objects)
+                try:
+                    record = Staff(
+                        serial_number=row[0],
+                        firstname=row[1],
+                        middlename=row[2],
+                        surname=row[3],
+                        gender=row[4],
+                        birthday=create_datetime_from_str(row[5]),
+                        contact_number=row[6],
+                        email=row[7],
+                        address=row[8]
+                    )
+                    bulk_upload_objects.append(record)
+                except (TypeError, ValueError) as e:
+                    flash(f"Error: Incorrect field name or field type in record - {row}")
+                    print(f"Error - {e}")
+                    continue
+            db.session.bulk_save_objects(bulk_upload_objects)
             db.session.commit()
             return redirect(url_for("main.bulk_upload"))
 
