@@ -23,6 +23,7 @@ from flask_uploads import configure_uploads, UploadSet, IMAGES, DATA
 from studentapp.main import bp
 from flask_login import login_required
 from .decorators import route_level_access
+from sqlalchemy import exc
 
 # settings for uploading images
 images = UploadSet("images", IMAGES)
@@ -578,8 +579,15 @@ def bulk_upload():
         bulk_data = csv.reader(data_stream)
         next(bulk_data)  # skip header row
         bulk_upload_objects = []
+        serial_nums = {}
         if object_type == "Student":
             for row in bulk_data:
+                # check if serial number in dict
+                if serial_nums.get(row[0]) is None:
+                    serial_nums[row[0]] = 1
+                else:
+                    flash(f"A record with this serial number - {row[0]} already exists, record will be skipped")
+                    continue
                 try:
                     record = Student(
                         serial_number=row[0],
@@ -601,10 +609,20 @@ def bulk_upload():
                     continue
 
             db.session.bulk_save_objects(bulk_upload_objects)
-            db.session.commit()
+            # add exception handler for if duplicate record already exists in db
+            try:
+                db.session.commit()
+            except exc.IntegrityError:
+                flash("Duplicate record(s) found in list, unable to carry out batch update")
             return redirect(url_for("main.bulk_upload"))
         elif object_type == "Staff":
             for row in bulk_data:
+                # check if serial number in dict
+                if serial_nums.get(row[0]) is None:
+                    serial_nums[row[0]] = 1
+                else:
+                    flash(f"A record with this serial number - {row[0]} already exists, record will be skipped")
+                    continue
                 try:
                     record = Staff(
                         serial_number=row[0],
@@ -623,7 +641,10 @@ def bulk_upload():
                     print(f"Error - {e}")
                     continue
             db.session.bulk_save_objects(bulk_upload_objects)
-            db.session.commit()
+            try:
+                db.session.commit()
+            except exc.IntegrityError:
+                flash("Duplicate record(s) exists in list, unable to carry out batch update")
             return redirect(url_for("main.bulk_upload"))
 
     return render_template("bulk_upload.html", title="Bulk Uploads", form=form)
