@@ -607,10 +607,9 @@ def bulk_upload():
                     flash(f"Error: Incorrect field name or field type in record - {row}")
                     print(f"Error - {e}")
                     continue
-
-            db.session.bulk_save_objects(bulk_upload_objects)
             # add exception handler for if duplicate record already exists in db
             try:
+                db.session.bulk_save_objects(bulk_upload_objects)
                 db.session.commit()
             except exc.IntegrityError:
                 flash("Duplicate record(s) found in list, unable to carry out batch update")
@@ -640,8 +639,9 @@ def bulk_upload():
                     flash(f"Error: Incorrect field name or field type in record - {row}")
                     print(f"Error - {e}")
                     continue
-            db.session.bulk_save_objects(bulk_upload_objects)
+            # add exception handler for if duplicate record already exists in db
             try:
+                db.session.bulk_save_objects(bulk_upload_objects)
                 db.session.commit()
             except exc.IntegrityError:
                 flash("Duplicate record(s) exists in list, unable to carry out batch update")
