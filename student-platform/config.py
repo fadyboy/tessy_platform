@@ -1,13 +1,12 @@
 import os
 
-
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 
 class Config:
     SECRET_KEY = os.environ.get("SECRET_KEY")
     SQLALCHEMY_DATABASE_URI = os.environ.get("DATABASE_URL") or \
-        f"sqlite:///{os.path.join(basedir, 'studentapp.db')}"
+                              f"sqlite:///{os.path.join(basedir, 'studentapp.db')}"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # configure how many users, students, staff displayed on page
@@ -24,9 +23,16 @@ class Config:
     # profile pictures upload folder
     UPLOADED_IMAGES_DEST = os.path.join(
         basedir, "studentapp/static/images/profile_pics"
-        )
+    )
 
     # folder for bulk file uploads
     UPLOADED_DATA_DEST = os.path.join(
         basedir, "studentapp/static/data"
     )
+
+
+class TestConfig(Config):
+    TESTING = True
+    SQLALCHEMY_DATABASE_URI = "sqlite:///memory"
+    WTF_CSRF_ENABLED = False
+    SECRET_KEY = "my-ultra-secret-key"
