@@ -8,6 +8,7 @@ from flask_migrate import Migrate
 from flask_login import LoginManager
 from flask_mail import Mail
 from flask_moment import Moment
+from elasticsearch import Elasticsearch
 
 
 db = SQLAlchemy()
@@ -21,6 +22,7 @@ moment = Moment()
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
+    
     # initialize extensions within the app context
     with app.app_context():
         db.init_app(app)
@@ -28,6 +30,10 @@ def create_app(config_class=Config):
         login.init_app(app)
         mail.init_app(app)
         moment.init_app(app)
+
+        # elasticsearch initialization
+        app.elasticsearch = Elasticsearch(
+            [app.config["ELASTICSEARCH_URL"]]) if app.config["ELASTICSEARCH_URL"] else None
 
         # Register blueprints
         from studentapp.errors import bp as errors_bp
@@ -64,7 +70,7 @@ def create_app(config_class=Config):
                 os.mkdir("logs")
             file_handler = RotatingFileHandler(
                 "logs/studentapp.log", maxBytes=10240, backupCount=10
-                )
+            )
             file_handler.setFormatter(logging.Formatter(
                 "%(asctime)s %(levelname)s: %(message)s \
                 in [%(pathname)s:%(lineno)d]"
@@ -74,5 +80,3 @@ def create_app(config_class=Config):
             app.logger.setLevel(logging.INFO)
             app.logger.info("StudentApp startup")
     return app
-
-from studentapp import models

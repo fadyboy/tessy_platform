@@ -30,6 +30,9 @@ class Config:
         basedir, "studentapp/static/data"
     )
 
+    # Elasticsearch config
+    ELASTICSEARCH_URL = os.environ.get("ELASTICSEARCH_URL")
+
 
 class TestConfig(Config):
     TESTING = True
