@@ -11,6 +11,7 @@ from datetime import datetime
 
 class User(db.Model, UserMixin):
     __tablename__ = "users"
+    __searchable__ = ["username", "email"]
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64, collation="NOCASE"), index=True,
                          unique=True)
@@ -91,11 +92,13 @@ class Person(db.Model):
 
 class Staff(Person):
     __tablename__ = "staff"
+    __searchable__ = ["serial_number", "firstname", "surname"]
     id = db.Column(db.Integer, primary_key=True)
 
 
 class Student(Person):
     __tablename__ = "student"
+    __searchable__ = ["serial_number", "firstname", "surname"]
     id = db.Column(db.Integer, primary_key=True)
     parent_guardian_name = db.Column(db.String(128))
     classroom_id = db.Column(db.Integer, db.ForeignKey("classroom.id"),

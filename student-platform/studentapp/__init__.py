@@ -22,7 +22,7 @@ moment = Moment()
 def create_app(config_class=Config):
     app = Flask(__name__)
     app.config.from_object(config_class)
-    
+
     # initialize extensions within the app context
     with app.app_context():
         db.init_app(app)
@@ -32,8 +32,8 @@ def create_app(config_class=Config):
         moment.init_app(app)
 
         # elasticsearch initialization
-        app.elasticsearch = Elasticsearch(
-            [app.config["ELASTICSEARCH_URL"]]) if app.config["ELASTICSEARCH_URL"] else None
+        app.elasticsearch = Elasticsearch([app.config["ELASTICSEARCH_URL"]])\
+            if app.config["ELASTICSEARCH_URL"] else None
 
         # Register blueprints
         from studentapp.errors import bp as errors_bp
