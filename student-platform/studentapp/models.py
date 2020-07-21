@@ -7,9 +7,54 @@ from studentapp.utils import avatar
 from time import time
 from flask import current_app
 from datetime import datetime
+from studentapp.search import add_to_index, remove_from_index, query_index
 
 
-class User(db.Model, UserMixin):
+# Elasticsearch class
+class SearchableMixin(object):
+    @classmethod
+    def search(cls, expression, page, per_page):
+        ids, total = query_index(cls.__tablename__, expression, page, per_page)
+        if total == 0:
+            return cls.query.filter_by(id=0), 0
+        when = []
+        for i in range(len(ids)):
+            when.append((ids[i], i))
+        return cls.query.filter(cls.id.in_(ids)).order_by(
+            db.case(when, value=cls.id)), total
+
+    @classmethod
+    def before_commit(cls, session):
+        session._changes = {
+            "add": list(session.new),
+            "update": list(session.dirty),
+            "delete": list(session.deleted)
+        }
+
+    @classmethod
+    def after_commit(cls, session):
+        for obj in session._changes["add"]:
+            if isinstance(obj, SearchableMixin):
+                add_to_index(obj.__tablename__, obj)
+        for obj in session._changes["update"]:
+            if isinstance(obj, SearchableMixin):
+                add_to_index(obj.__tablename__, obj)
+        for obj in session._changes["delete"]:
+            if isinstance(obj, SearchableMixin):
+                remove_from_index(obj.__tablename__, obj)
+        session._changes = None
+
+    @classmethod
+    def reindex(cls):
+        for obj in cls.query:
+            add_to_index(obj.__tablename__, obj)
+
+
+db.event.listen(db.session, "before_commit", SearchableMixin.before_commit)
+db.event.listen(db.session, "after_commit", SearchableMixin.after_commit)
+
+
+class User(SearchableMixin, db.Model, UserMixin):
     __tablename__ = "users"
     __searchable__ = ["username", "email"]
     id = db.Column(db.Integer, primary_key=True)
@@ -57,7 +102,7 @@ class User(db.Model, UserMixin):
         return User.query.get(id)
 
 
-class Person(db.Model):
+class Person(SearchableMixin, db.Model):
     __abstract__ = True
     id = db.Column(db.Integer, primary_key=True)
     serial_number = db.Column(db.String(32), nullable=False, unique=True)
@@ -115,13 +160,13 @@ class Student(Person):
     @staticmethod
     def get_total_students_by_gender(gender):
         students = db.session.query(db.func.count(Student.gender))\
-                   .filter_by(gender=gender).all()
+            .filter_by(gender=gender).all()
         return students[0][0]
 
     @staticmethod
     def get_gender_total_in_class(gender, class_id):
         students = db.session.query(db.func.count(Student.gender))\
-                   .filter_by(gender=gender, classroom_id=class_id).all()
+            .filter_by(gender=gender, classroom_id=class_id).all()
         return students[0][0]
 
 
@@ -146,7 +191,8 @@ class Classroom(db.Model):
 
     @staticmethod
     def get_classroom_id_from_symbol(classroom_symbol):
-        classroom = Classroom.query.filter_by(classroom_symbol=classroom_symbol).first()
+        classroom = Classroom.query.filter_by(
+            classroom_symbol=classroom_symbol).first()
         return classroom.id
 
 
@@ -259,13 +305,13 @@ class StudentResults(db.Model):
                                                  classroom_id, term,
                                                  sessions_id):
         subject_score_average = db.session.query(db.func.avg(
-                                                StudentResults.total_score)
-                                                ).filter_by(
-                                                    subject_id=subject_id,
-                                                    classroom_id=classroom_id,
-                                                    term=term,
-                                                    sessions_id=sessions_id
-                                                    ).all()
+            StudentResults.total_score)
+        ).filter_by(
+            subject_id=subject_id,
+            classroom_id=classroom_id,
+            term=term,
+            sessions_id=sessions_id
+        ).all()
         # return the first element of the tuple
         return subject_score_average[0][0]
 
