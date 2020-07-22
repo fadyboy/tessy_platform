@@ -2,7 +2,7 @@ import pdfkit
 import csv
 from io import StringIO
 from flask import (render_template, redirect, request, flash,
-                   url_for, make_response, current_app)
+                   url_for, make_response, current_app, g)
 
 from studentapp import db
 from studentapp.main.forms import (
@@ -10,7 +10,7 @@ from studentapp.main.forms import (
     AddStudentForm, EditStudentForm, AddSubjectForm, EditSubjectForm,
     AddClassroomForm, EditClassroomForm, EnterStudentScoresForm,
     SubmitStudentScoresForm, AddSessionForm, SetActiveSessionForm,
-    UploadImageForm, BulkUploadForm
+    UploadImageForm, BulkUploadForm, SearchForm
 )
 from studentapp.models import (
     User, Staff, Student, Subject, Classroom, Sessions,
@@ -21,7 +21,7 @@ from studentapp.utils import (create_pagination_for_page_view,
                               get_student_results, create_datetime_from_str)
 from flask_uploads import configure_uploads, UploadSet, IMAGES, DATA
 from studentapp.main import bp
-from flask_login import login_required
+from flask_login import login_required, current_user
 from .decorators import route_level_access
 from sqlalchemy import exc
 
@@ -29,6 +29,14 @@ from sqlalchemy import exc
 images = UploadSet("images", IMAGES)
 data = UploadSet("data", DATA)
 configure_uploads(current_app, (images, data))
+
+
+@bp.before_app_request
+def before_request():
+    # set the SearchForm as part of flask global to access throught request
+    # add just before request
+    if current_user.is_authenticated:
+        g.search_form = SearchForm()
 
 
 @bp.route("/")
@@ -510,6 +518,10 @@ def set_active_session():
 @bp.route("/upload_image", methods=["GET", "POST"])
 @login_required
 def upload_image():
+    # add variables for the url_function, person object, and object id
+    url_func = None
+    person_obj = None
+    obj_id = None
     if request.method == "POST":
         obj_id = request.args.get("id")
         obj_type = request.args.get("obj_type")
@@ -648,4 +660,3 @@ def bulk_upload():
             return redirect(url_for("main.bulk_upload"))
 
     return render_template("bulk_upload.html", title="Bulk Uploads", form=form)
-

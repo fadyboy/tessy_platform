@@ -8,6 +8,7 @@ from wtforms.validators import DataRequired, ValidationError, Email, EqualTo,\
 from flask_wtf.file import FileRequired, FileField
 from studentapp.models import Role, User, Classroom, Subject, Staff, Student,\
     Sessions
+from flask import request
 
 
 # Helper function to resolve the Value error for the QuerySelectField
@@ -292,3 +293,14 @@ class BulkUploadForm(FlaskForm):
         validators=[FileRequired(message="Please upload a valid file")]
     )
     submit = SubmitField("Upload")
+
+
+class SearchForm(FlaskForm):
+    q = StringField("Search", validators=[DataRequired()])
+
+    def __init__(self, *args, **kwargs):
+        if "formdata" not in kwargs:
+            kwargs["formdata"] = request.args
+        if "csrf_enabled" not in kwargs:
+            kwargs["csrf_enabled"] = False
+        super(SearchForm, self).__init__(*args, **kwargs)

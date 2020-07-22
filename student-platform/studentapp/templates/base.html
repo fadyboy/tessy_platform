@@ -25,6 +25,11 @@
                 {% if current_user.is_anonymous %}
                 <a href="{{ url_for('auth.login') }}" class="navbar-item">Login</a>
                 {% elif current_user.is_authenticated and current_user.role.name == "User" %}
+                {% if g.search_form %}
+                <form method="GET" action="">
+                    {{ g.search_form.q(size=20, placeholder=g.search_form.q.label.text, class="input is-small") }}
+                </form>
+                {% endif %}
                 <a href="{{ url_for('auth.logout') }}" class="navbar-item">Logout</a>
                 {% elif current_user.is_authenticated and current_user.role.name == "Admin" %}
                 <div class="navbar-item has-dropdown is-hoverable">
@@ -39,6 +44,11 @@
                         <a class="navbar-item" href="{{ url_for('main.add_session') }}">Add School Session</a>
                     </div>
                 </div>
+                {% if g.search_form %}
+                <form method="GET" action="">
+                    {{ g.search_form.q(size=20, placeholder=g.search_form.q.label.text, class="input is-small") }}
+                </form>
+                {% endif %}
                 <a href="{{ url_for('auth.logout') }}" class="navbar-item">Logout</a>
                 {% endif %}
             </div>
