@@ -18,7 +18,8 @@ from studentapp.models import (
 )
 from distutils.util import strtobool
 from studentapp.utils import (create_pagination_for_page_view,
-                              get_student_results, create_datetime_from_str)
+                              get_student_results, create_datetime_from_str,
+                              search_model)
 from flask_uploads import configure_uploads, UploadSet, IMAGES, DATA
 from studentapp.main import bp
 from flask_login import login_required, current_user
@@ -660,3 +661,20 @@ def bulk_upload():
             return redirect(url_for("main.bulk_upload"))
 
     return render_template("bulk_upload.html", title="Bulk Uploads", form=form)
+
+
+@bp.route("/search")
+@login_required
+def search():
+    page = request.args.get("page", 1, type=int)
+    query = g.search_form.q.data
+    search_obj = g.search_form.search_obj.data
+    if search_obj == "Students":
+        results, next_url, prev_url = search_model(Student, query, page)
+    elif search_obj == "Staff":
+        results, next_url, prev_url = search_model(Staff, query, page)
+    elif search_obj == "User":
+        results, next_url, prev_url = search_model(User, query, page)
+
+    return render_template("search.html", title="Search Results", results=results,
+                           next_url=next_url, prev_url=prev_url)

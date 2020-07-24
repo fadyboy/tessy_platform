@@ -297,6 +297,7 @@ class BulkUploadForm(FlaskForm):
 
 class SearchForm(FlaskForm):
     q = StringField("Search", validators=[DataRequired()])
+    search_obj = HiddenField()
 
     def __init__(self, *args, **kwargs):
         if "formdata" not in kwargs:

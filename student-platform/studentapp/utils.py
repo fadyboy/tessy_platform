@@ -60,3 +60,14 @@ def get_student_results(student_id, term, session_id, classroom_id,
 def create_datetime_from_str(date_string):
     """ Helper method to convert a date string to a python date object """
     return datetime.strptime(date_string, "%Y-%m-%d")
+
+
+def search_model(model, query, page):
+    results, total = model.search(
+        query, page, current_app.config["MAX_USERS_PER_PAGE"]
+    )
+    next_url = url_for("main.search", q=query, page=page + 1)\
+        if total > page * current_app.config["MAX_USERS_PER_PAGE"] else None
+    prev_url = url_for("main.search", q=query, page=page - 1)\
+        if page > 1 else None
+    return results, next_url, prev_url
