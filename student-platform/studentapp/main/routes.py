@@ -85,6 +85,8 @@ def add_user():
         db.session.add(user)
         db.session.commit()
         flash(f"{user.username} user added")
+        # re-index table for searches
+        User.reindex()
         return redirect(url_for("main.add_user"))
     return render_template("add_user.html", title="Add User", form=form)
 
@@ -110,6 +112,8 @@ def add_staff():
         db.session.commit()
         flash(f"{staff_user.firstname} {staff_user.surname} added as a member \
             of staff")
+        # re-index table for searches
+        Staff.reindex()
         return redirect(url_for("main.add_staff"))
     return render_template("add_staff.html", title="Add Staff", form=form)
 
@@ -138,6 +142,8 @@ def add_student():
         db.session.add(student)
         db.session.commit()
         flash(f"Student - {student.firstname} {student.surname} added")
+        # re-index table for searches
+        Student.reindex()
         return redirect(url_for("main.add_student"))
     return render_template("add_student.html", title="Add Student",
                            form=form)

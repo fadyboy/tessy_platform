@@ -1,7 +1,15 @@
 {% extends "base.html" %}
 
 {% block content %}
-    {% for result in results %}
-        <p>{{ result }}, {{ result.id }}</p>
-    {% endfor %}
+    <div class="title-wrapper has-text-centered">
+        <h2 class="title is-2 is-spaced">Search Results</h2>
+    </div>
+    <div class="subtitle"></div>
+    {% if results|length == 0 %}
+    <p>No search results found</p>
+    {% else %}
+        {% for result in results %}
+            <p>{{ result }}, {{ result.id }}</p>
+        {% endfor %}
+    {% endif %}
 {% endblock %}

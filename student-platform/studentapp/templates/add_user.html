@@ -10,9 +10,9 @@
             <div class="column is-2">
                 <h3 class="subtitle"><a href="{{ url_for('main.list_users') }}">View all users</a></h3>
                 {% if g.search_form %}
-                <form method="GET" action="" novalidate>
+                <form method="GET" action="{{ url_for('main.search') }}" novalidate>
                     {{ g.search_form.q(size=20, placeholder=g.search_form.q.label.text + " Users", class="input is-small") }}
-                    {{ g.search_form.search_obj(value="Users")}}
+                    {{ g.search_form.search_obj(value="User")}}
                 </form>
                 {% endif %}
             </div>

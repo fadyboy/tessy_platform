@@ -70,4 +70,5 @@ def search_model(model, query, page):
         if total > page * current_app.config["MAX_USERS_PER_PAGE"] else None
     prev_url = url_for("main.search", q=query, page=page - 1)\
         if page > 1 else None
-    return results, next_url, prev_url
+    # results is the sqlalchemy raw query
+    return results.all(), next_url, prev_url
