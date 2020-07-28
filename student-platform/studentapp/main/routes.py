@@ -496,7 +496,6 @@ def view_student_result():
         student_id, term, active_session.id, classroom_id,
         StudentResults, Subject
     )
-
     return render_template("view_student_result.html",
                            title="View Student Result",
                            records=records,
@@ -557,9 +556,9 @@ def upload_image():
 def download_report_pdf():
     term = request.args.get("term")
     student = Student.query.get(request.args.get("student_id"))
-    active_session = request.args.get("active_session")
+    active_session = Sessions.query.get(request.args.get("active_session"))
     records = get_student_results(
-        student.id, term, active_session,
+        student.id, term, active_session.id,
         student.classroom_id, StudentResults,
         Subject
     )
@@ -683,4 +682,4 @@ def search():
         results, next_url, prev_url = search_model(User, query, page)
 
     return render_template("search.html", title="Search Results", results=results,
-                           next_url=next_url, prev_url=prev_url)
+                           next_url=next_url, prev_url=prev_url, search_obj=search_obj)

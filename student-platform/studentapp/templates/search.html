@@ -9,7 +9,13 @@
     <p>No search results found</p>
     {% else %}
         {% for result in results %}
-            <p>{{ result }}, {{ result.id }}</p>
+            {% if search_obj == "Students" %}
+            <p><a href="{{ url_for('main.student', id=result.id) }}">{{ result }}</a></p>
+            {% elif search_obj == "Staff" %}
+            <p><a href="{{ url_for('main.staff', id=result.id) }}">{{ result }}</a></p>
+            {% elif search_obj == "User" %}
+            <p><a href="{{ url_for('main.user', id=result.id) }}">{{ result.username }}</a></p>
+            {% endif %}
         {% endfor %}
     {% endif %}
 {% endblock %}
