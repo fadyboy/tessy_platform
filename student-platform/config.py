@@ -10,7 +10,10 @@ class Config:
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     # configure how many users, students, staff displayed on page
-    MAX_USERS_PER_PAGE = 5
+    MAX_USERS_PER_PAGE = 10
+
+    # For logging when deployed to heroku
+    LOG_TO_STDOUT = os.environ.get("LOG_TO_STDOUT")
 
     # Mail server settings
     MAIL_SERVER = os.environ.get("MAIL_SERVER")
