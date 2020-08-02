@@ -17,4 +17,4 @@ def make_shell_context():
         "Subject": Subject,
         "Session": Sessions,
         "Results": StudentResults
-        }
+    }
