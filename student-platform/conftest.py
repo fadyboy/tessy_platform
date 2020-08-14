@@ -118,5 +118,3 @@ def sample_students(test_db, sample_classroom):
     test_db.session.add_all([student_1, student_2])
     test_db.session.commit()
     yield [student_1, student_2]
-
-

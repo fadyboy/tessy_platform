@@ -61,9 +61,9 @@ class User(SearchableMixin, db.Model, UserMixin):
     __tablename__ = "users"
     __searchable__ = ["username", "email"]
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(64, collation="NOCASE"), index=True,
+    username = db.Column(db.String(64), index=True,
                          unique=True)
-    email = db.Column(db.String(128, collation="NOCASE"), index=True,
+    email = db.Column(db.String(128), index=True,
                       unique=True)
     password_hash = db.Column(db.String(128))
     is_active = db.Column(db.Boolean, nullable=False, server_default="t")
@@ -103,6 +103,32 @@ class User(SearchableMixin, db.Model, UserMixin):
         except Exception:
             return
         return User.query.get(id)
+
+
+class Classroom(db.Model):
+    __tablename__ = "classroom"
+    id = db.Column(db.Integer, primary_key=True)
+    classroom_name = db.Column(db.String(128), nullable=False)
+    classroom_symbol = db.Column(db.String(8), nullable=False, unique=True)
+    students = db.relationship("Student", backref="classroom", lazy="dynamic")
+
+    def __repr__(self):
+        return f"Classroom: {self.classroom_symbol}"
+
+    def total_students_in_classroom(self):
+        students_list = [student for student in self.students]
+        total_students = len(students_list)
+        return total_students
+
+    @staticmethod
+    def list_classrooms():
+        return Classroom.query.order_by(Classroom.classroom_symbol).all()
+
+    @staticmethod
+    def get_classroom_id_from_symbol(classroom_symbol):
+        classroom = Classroom.query.filter_by(
+            classroom_symbol=classroom_symbol).first()
+        return classroom.id
 
 
 class Person(SearchableMixin, db.Model):
@@ -171,32 +197,6 @@ class Student(Person):
         students = db.session.query(db.func.count(Student.gender))\
             .filter_by(gender=gender, classroom_id=class_id).all()
         return students[0][0]
-
-
-class Classroom(db.Model):
-    __tablename__ = "classroom"
-    id = db.Column(db.Integer, primary_key=True)
-    classroom_name = db.Column(db.String(128), nullable=False)
-    classroom_symbol = db.Column(db.String(8), nullable=False, unique=True)
-    students = db.relationship("Student", backref="classroom", lazy="dynamic")
-
-    def __repr__(self):
-        return f"Classroom: {self.classroom_symbol}"
-
-    def total_students_in_classroom(self):
-        students_list = [student for student in self.students]
-        total_students = len(students_list)
-        return total_students
-
-    @staticmethod
-    def list_classrooms():
-        return Classroom.query.order_by(Classroom.classroom_symbol).all()
-
-    @staticmethod
-    def get_classroom_id_from_symbol(classroom_symbol):
-        classroom = Classroom.query.filter_by(
-            classroom_symbol=classroom_symbol).first()
-        return classroom.id
 
 
 class Role(db.Model):
