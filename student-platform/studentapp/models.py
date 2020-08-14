@@ -316,7 +316,7 @@ class StudentResults(db.Model):
             sessions_id=sessions_id
         ).all()
         # return the first element of the tuple
-        return subject_score_average[0][0]
+        return f"{subject_score_average[0][0]:6.2f}"
 
     @staticmethod
     def calculate_score_position_in_subject(
