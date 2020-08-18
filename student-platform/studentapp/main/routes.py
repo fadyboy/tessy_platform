@@ -580,6 +580,7 @@ def download_report_pdf():
 
 @bp.route("/bulk_upload", methods=["GET", "POST"])
 @login_required
+@route_level_access(["Admin"])
 def bulk_upload():
     """
     - upload file

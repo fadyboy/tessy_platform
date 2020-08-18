@@ -1,22 +1,48 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <form action="" method="post" enctype="multipart/form-data" novalidate>
-       {{ form.hidden_tag() }}
-        <div>
-            <p>
-                {{ form.upload_object() }}
-                {% for error in form.upload_object.errors %}
-                    <span style="color:red;">{{ error }}</span>
-                {% endfor %}
-            </p>
-            <p>
-                {{ form.bulk_upload_file() }}
-                {% for error in form.bulk_upload_file.errors %}
-                    <span style="color:red;">{{ error }}</span>
-                {% endfor %}
-            </p>
-            <p>{{ form.submit() }}</p>
+    <div class="title-wrapper has-text-centered">
+        <h2 class="title is-2">Bulk Data Upload</h2>
+    </div>
+    <div class="subtitle"></div>
+    <div class="columns is-centered">
+        <div class="column is-4">
+            <form action="" method="post" enctype="multipart/form-data" novalidate>
+                {{ form.hidden_tag() }}
+                <p class="subtitle">
+                    {{ form.upload_object(class="select") }}
+                    {% for error in form.upload_object.errors %}
+                        <span style="color:red;">{{ error }}</span>
+                    {% endfor %}
+                </p>
+                <div class="file has-name">
+                    <label class="file-label">
+                        {{ form.bulk_upload_file(class="file-input") }}
+                        {% for error in form.bulk_upload_file.errors %}
+                            <span style="color:red;">{{ error }}</span>
+                        {% endfor %}
+                        <span class="file-cta">
+                            <span class="file-icon">
+                                <i class="fas fa-upload"></i>
+                            </span>
+                            <span class="file-label">Select a file...</span>
+                        </span>
+                        <span class="file-name">No file selected</span>
+                    </label>
+                </div>
+                <div class="subtitle"></div>
+                <p>{{ form.submit(class="button is-info") }}</p> 
+                <script>
+                    const fileInput = document.querySelector("#bulk_upload_file");
+                    fileInput.onchange = () => {
+                        if (fileInput.files.length > 0) {
+                            const fileName = document.querySelector("span.file-name");
+                            fileName.textContent = fileInput.files[0].name;
+                        }
+                    }
+                </script>     
+             </form>
         </div>
-    </form>
+    </div>
+    
 {% endblock %}
