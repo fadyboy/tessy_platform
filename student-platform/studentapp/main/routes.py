@@ -630,6 +630,7 @@ def bulk_upload():
             try:
                 db.session.bulk_save_objects(bulk_upload_objects)
                 db.session.commit()
+                flash(f"Successfully uploaded {len(bulk_upload_objects)} students")
             except exc.IntegrityError:
                 flash("Duplicate record(s) found in list, unable to carry out batch update")
             return redirect(url_for("main.bulk_upload"))
@@ -662,6 +663,7 @@ def bulk_upload():
             try:
                 db.session.bulk_save_objects(bulk_upload_objects)
                 db.session.commit()
+                flash(f"Successfully uploaded {len(bulk_upload_objects)} staff")
             except exc.IntegrityError:
                 flash("Duplicate record(s) exists in list, unable to carry out batch update")
             return redirect(url_for("main.bulk_upload"))
