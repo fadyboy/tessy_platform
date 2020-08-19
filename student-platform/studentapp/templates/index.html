@@ -2,7 +2,7 @@
 
 {% block content %}
     {% if current_user.is_authenticated %}
-        <p>Welcome {{ current_user.username }}</p>
+        <p>Welcome <b>{{ current_user.username }}</b>,</p>
     {% endif %}
     <div class="subtitle"></div>
     <div class="tile is-ancestor">
