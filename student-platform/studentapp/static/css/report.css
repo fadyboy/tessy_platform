@@ -1,0 +1,30 @@
+@page {
+    margin: 3cm;
+}
+
+html {
+    font-size: 11pt;
+    line-height: 1.6;
+}
+
+html body {
+    margin: 0;
+}
+
+html h1 {
+    font-size: 40pt;
+    margin: 0;
+}
+
+html table {
+    width: 100%;
+}
+
+html table th {
+    font-size: 10pt;
+    font-weight: bold;
+}
+
+html table th, html table td {
+    text-align: center;
+}

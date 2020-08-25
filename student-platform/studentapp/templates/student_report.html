@@ -3,6 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/bulma.min.css')}}">
     </head>
     <body>
         <img src="http://localhost:5000/static/images/tessy_badge.jpg" />
@@ -13,7 +14,7 @@
         <div class="subtitle"></div>
         <div class="content-wrapper">
             <div class="columns is-centered">
-                <div class="column is-four-fiths">
+                <div class="column is-four-fifths">
                     {% include "includes/student_report_details.html" %}
                     {% include "includes/student_report_records.html" %}
                 </div>
