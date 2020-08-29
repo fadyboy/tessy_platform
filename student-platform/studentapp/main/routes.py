@@ -566,11 +566,8 @@ def download_report_pdf():
                                               student=student, term=term,
                                               active_session=active_session,
                                               records=records)
-    # return student_report_template
-    css_file_1 = "studentapp/static/css/report.css"
-    css_file_2 = "studentapp/static/css/bulma.min.css"
+
     return render_pdf(HTML(string=student_report_template),
-                      stylesheets=[css_file_1, css_file_2],
                       download_filename=f"{student.firstname}_{student.surname}_report.pdf"
                       )
 

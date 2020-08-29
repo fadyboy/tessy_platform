@@ -1,25 +1,58 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="{{ url_for('static', filename='css/bulma.min.css')}}">
-    </head>
-    <body>
-        <img src="http://localhost:5000/static/images/tessy_badge.jpg" />
-        <div class="title-wrapper has-text-centered">
-            <h1 class="title is-2">{{ student.firstname }} {{ student.surname }} Report</h1>
-        </div>
-        <hr />
-        <div class="subtitle"></div>
-        <div class="content-wrapper">
-            <div class="columns is-centered">
-                <div class="column is-four-fifths">
-                    {% include "includes/student_report_details.html" %}
-                    {% include "includes/student_report_records.html" %}
-                </div>
-            </div>
-        </div>
-        
-    </body>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/report.css') }}" media="print">
+    <title>Student Report</title>
+</head>
+<body>
+    <img src="{{ url_for('static', filename='images/tessy_badge.jpg') }}" />
+    <h1>{{ student.firstname }} {{ student.surname }} Report</h1>
+    <table>
+        <thead>
+            <th>Student Name</th>
+            <th>Admission Number</th>
+            <th>Gender</th>
+            <th>Age</th>
+            <th>Class</th>
+            <th>Term</th>
+            <th>Session</th>
+            <th>Total in Class</th>
+        </thead>
+        <tr>
+            <td>{{ student.firstname }} {{ student.surname }}</td>
+            <td>{{ student.serial_number }}</td>
+            <td>{{ student.gender }}</td>
+            <td>{{ student.calculate_age() }} yrs</td>
+            <td>{{ student.display_classroom_symbol() }}</td>
+            <td>{{ term }}</td>
+            <td>{{ active_session.session }}</td>
+            <td>{{ student.get_total_students_in_class() }}</td>
+        </tr>
+    </table>
+    <table>
+        <thead>
+            <th>Subject</th>
+            <th>CA Score(50%)</th>
+            <th>Exam Score(50%)</th>
+            <th>Total</th>
+            <th>Grade</th>
+            <th>Remarks</th>
+            <th>Average Score</th>
+            <th>Position</th>
+        </thead>
+        {% for record in records %}
+        <tr>
+            <td>{{ record.subject_name }}</td>
+            <td>{{ record.ca_score }}</td>
+            <td>{{ record.exam_score }}</td>
+            <td>{{ record.total }}</td>
+            <td>{{ record.grade }}</td>
+            <td>{{ record.remark }}</td>
+            <td>{{ record.average_score }}</td>
+            <td>{{ record.score_position }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
 </html>

@@ -1,10 +1,11 @@
 @page {
-    margin: 3cm;
+    margin: 2cm;
 }
 
 html {
     font-size: 11pt;
     line-height: 1.6;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 html body {
@@ -12,17 +13,26 @@ html body {
 }
 
 html h1 {
-    font-size: 40pt;
+    font-size: 25pt;
     margin: 0;
 }
 
 html table {
+    border-collapse: collapse;
     width: 100%;
+    margin: 10px;
+}
+
+html table tr td {
+    padding: 2px;
+    border: 1px solid black;
 }
 
 html table th {
+    padding: 2px;
     font-size: 10pt;
     font-weight: bold;
+    border: 1px solid black;
 }
 
 html table th, html table td {
