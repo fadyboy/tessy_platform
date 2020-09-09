@@ -5,7 +5,7 @@ RUN adduser -D studentapp
 WORKDIR /home/studentapp
 
 COPY requirements.txt requirements.txt
-RUN apk update && apk upgrade
+RUN apk update
 RUN apk add --no-cache gcc \ 
                        g++ \
                        musl-dev \
