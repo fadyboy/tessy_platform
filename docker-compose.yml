@@ -1,0 +1,46 @@
+version: '3.7'
+
+services:
+
+    student-platform:
+        build: 
+            context: ./student-platform
+            dockerfile: Dockerfile
+        container_name: student-app
+        entrypoint: ['sh', './boot.sh']
+        volumes: 
+            - './student-platform:/home/studentapp'
+        ports: 
+            - 5000:5000
+        environment: 
+            - FLASK_APP=student_platform.py
+            - FLASK_ENV=Development
+            - FLASK_DEBUG=1
+            - SECRET_KEY=my-secret-key
+            - ELASTICSEARCH_URL=http://elastic-search:9200
+            - DATABASE_URL=postgresql://postgres:postgres@student-db:5432/studentapp_db
+        depends_on: 
+            - student-db
+            - elastic-search
+
+    student-db:
+        build: 
+            context: ./student-platform/db
+            dockerfile: Dockerfile
+        container_name: student-db
+        expose:
+            - 5432
+        volumes: 
+            - ./student-db-data:/var/lib/postgresql/data
+        environment: 
+            - POSTGRES_USER=postgres
+            - POSTGRES_PASSWORD=postgres
+
+    elastic-search:
+        image: docker.elastic.co/elasticsearch/elasticsearch:7.9.1
+        container_name: elastic-search
+        ports: 
+            - 9200:9200
+            - 9300:9300
+        environment: 
+            - discovery.type=single-node

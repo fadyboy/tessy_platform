@@ -18,9 +18,11 @@ RUN apk add --no-cache gcc \
                        gdk-pixbuf-dev \
                        postgresql-dev \
                        && rm -rf /var/cache/apk/*
-RUN python -m venv venv
-RUN venv/bin/python -m pip install --upgrade pip wheel setuptools
-RUN venv/bin/pip install -r requirements.txt
+# RUN python -m venv venv
+# RUN venv/bin/python -m pip install --upgrade pip wheel setuptools
+# RUN venv/bin/pip install -r requirements.txt
+RUN pip install --upgrade pip wheel setuptools
+RUN pip install -r requirements.txt
 
 COPY studentapp studentapp
 COPY migrations migrations
