@@ -42,7 +42,7 @@ Pillow==7.2.0
 plotly==4.6.0
 pluggy==0.13.1
 psycopg2==2.8.5
-py==1.8.2
+py==1.10.0
 pycodestyle==2.6.0
 pycparser==2.20
 pyflakes==2.2.0
